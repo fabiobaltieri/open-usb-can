@@ -25,9 +25,10 @@
 #include "board.h"
 #include "descr.h"
 #include "ep0.h"
+#include "can.h"
 
 static uint8_t x[64];
-static uint8_t lock;
+static uint16_t lock;
 
 void send_again (void *user)
 {
@@ -47,7 +48,7 @@ void recv_done (void *user)
 	led_a_toggle();
 	usb_recv(&eps[1], x+1, 16, recv_done, NULL);
 
-	lock++;
+	//lock++;
 }
 
 static void led_init (void)
@@ -60,6 +61,8 @@ static void led_init (void)
 
 int main(void)
 {
+	struct can_frame cf;
+
 	board_init();
 	led_init();
 	usb_init();
@@ -77,6 +80,8 @@ int main(void)
 
 	_delay_ms(500);
 	_delay_ms(500);
+	_delay_ms(500);
+	_delay_ms(500);
 
 	led_a_on();
 	led_b_on();
@@ -86,15 +91,19 @@ int main(void)
 	usb_recv(&eps[1], x, 16, recv_done, NULL);
 
 	/* send_again(x); */
-
+	memset(&cf, 0, sizeof(cf));
+	cf.can_id = 0xfab10 | CAN_EFF_FLAG;
+	cf.can_dlc = 4;
+	cf.data[0] = 0;
 	while (1) {
 		cli();
-		if (lock && eps[2].state == EP_IDLE) {
-			usb_send(&eps[2], x, 32, send_again, NULL);
-			lock--;
+		if (lock == 0 && eps[2].state == EP_IDLE) {
+			usb_send(&eps[2], &cf, sizeof(cf), send_again, NULL);
+			cf.data[0]++;
 		}
+		lock++;
 		sei();
 
-		sleep_mode();
+		//sleep_mode();
 	}
 }
