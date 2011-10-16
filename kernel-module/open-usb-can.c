@@ -530,6 +530,18 @@ static int open_usb_can_probe(struct usb_interface *intf,
 	struct open_usb_can *dev;
 	int i, err;
 
+        /*
+         * Ignore all interfaces used for DFU, i.e., everything while in the
+         * boot loader, and interface #1 when in the application.
+         */
+        if (intf->cur_altsetting->desc.bInterfaceClass !=
+            USB_CLASS_VENDOR_SPEC) {
+                dev_dbg(&intf->dev,
+                        "Ignoring interface with class 0x%02x\n",
+                        intf->cur_altsetting->desc.bInterfaceClass);
+                return -ENODEV;
+        }
+
 	netdev = alloc_candev(sizeof(struct open_usb_can), MAX_TX_URBS);
 	if (!netdev) {
 		dev_err(&intf->dev, "couldn't alloc candev\n");
