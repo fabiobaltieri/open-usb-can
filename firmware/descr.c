@@ -35,11 +35,7 @@ const uint8_t device_descriptor[18] = {
 	LE(0x0001),		/* bcdDevice */
 	0,			/* iManufacturer */
 	0,			/* iProduct */
-#ifdef HAS_BOARD_SERNUM
 	1,			/* iSerialNumber */
-#else
-	0,			/* iSerialNumber */
-#endif
 	1			/* bNumConfigurations */
 };
 
@@ -53,11 +49,7 @@ const uint8_t device_descriptor[18] = {
 const uint8_t config_descriptor[] = {
 	9,			/* bLength */
 	USB_DT_CONFIG,		/* bDescriptorType */
-#if 1
 	LE(9+9+7+7+9),		/* wTotalLength */
-#else
-	LE(9+9+7+9),		/* wTotalLength */
-#endif
 	2,			/* bNumInterfaces */
 	1,			/* bConfigurationValue (> 0 !) */
 	0,			/* iConfiguration */
@@ -76,7 +68,6 @@ const uint8_t config_descriptor[] = {
 	0,			/* bInterfaceProtocol */
 	0,			/* iInterface */
 
-#if 1
 	/* EP OUT */
 
 	7,			/* bLength */
@@ -85,9 +76,7 @@ const uint8_t config_descriptor[] = {
 	0x02,			/* bmAttributes (bulk) */
 	LE(EP1_SIZE),		/* wMaxPacketSize */
 	0,			/* bInterval */
-#endif
 
-#if 1
 	/* EP IN */
 
 	7,			/* bLength */
@@ -96,7 +85,6 @@ const uint8_t config_descriptor[] = {
 	0x02,			/* bmAttributes (bulk) */
 	LE(EP1_SIZE),		/* wMaxPacketSize */
 	0,			/* bInterval */
-#endif
 
 	/* Interface #1 */
 

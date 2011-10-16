@@ -22,10 +22,6 @@
 #include "usb.h"
 #include "board.h"
 
-
-static volatile uint32_t timer_h = 0;	/* 2^(16+32) / 8 MHz = ~1.1 years */
-
-
 void reset_cpu(void)
 {
 	WDTCSR = 1 << WDE;

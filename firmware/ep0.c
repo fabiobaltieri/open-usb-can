@@ -16,10 +16,6 @@
 
 #include <avr/io.h>
 
-#ifndef NULL
-#define NULL 0
-#endif
-
 #include "usb.h"
 #include "dfu.h"
 
@@ -28,17 +24,12 @@
 #include "board.h"
 #include "sernum.h"
 
-
-#define	HW_TYPE		HW_TYPE_110131
-
 #define debug(...)
 #define error(...)
 
-
-static const uint8_t id[] = { EP0ATUSB_MAJOR, EP0ATUSB_MINOR, HW_TYPE };
+static const uint8_t id[] = { EP0ATUSB_MAJOR, EP0ATUSB_MINOR };
 static uint8_t buf[32]; /* command, PHDR, and LQI */
 static uint8_t size;
-
 
 #if 0
 static void do_buf_write(void *user)
@@ -64,12 +55,14 @@ static int my_setup(const struct setup_request *setup)
 #endif
 
 	switch (req) {
+
 	case ATUSB_FROM_DEV(ATUSB_ID):
 		debug("ATUSB_ID\n");
-		if (setup->wLength > 3)
+		if (setup->wLength > 2)
 			return 0;
 		usb_send(&eps[0], id, setup->wLength, NULL, NULL);
 		return 1;
+
 	case ATUSB_FROM_DEV(ATUSB_BUILD):
 		debug("ATUSB_BUILD\n");
 		tmp = build_number;
@@ -221,7 +214,6 @@ static int my_setup(const struct setup_request *setup)
 	}
 }
 
-
 static int my_dfu_setup(const struct setup_request *setup)
 {
 	switch (setup->bmRequestType | setup->bRequest << 8) {
@@ -233,7 +225,6 @@ static int my_dfu_setup(const struct setup_request *setup)
 		return dfu_setup_common(setup);
 	}
 }
-
 
 static void my_set_interface(int nth)
 {
@@ -247,13 +238,13 @@ static void my_set_interface(int nth)
 	}
 }
 
-
 static void my_reset(void)
 {
-	if (dfu.state == appDETACH)
+	if (dfu.state == appDETACH) {
 		reset_cpu();
+		while (1);
+	}
 }
-
 
 void ep0_init(void)
 {

@@ -26,15 +26,15 @@
 
 uint8_t board_sernum[42] = { 42, USB_DT_STRING };
 
-
 void panic(void)
 {
 	cli();
-	LED_R_DDR = _BV(LED_R);
 	while (1) {
-		LED_R_PORT |=  _BV(LED_R);
+		led_a_on();
+		led_b_on();
 		_delay_ms(100);
-		LED_R_PORT &= ~_BV(LED_R);
+		led_a_off();
+		led_b_off();
 		_delay_ms(100);
 	}
 }
@@ -44,7 +44,6 @@ static char hex(uint8_t nibble)
 {
 	return nibble < 10 ? '0'+nibble : 'a'+nibble-10;
 }
-
 
 static void get_sernum(void)
 {
@@ -57,7 +56,6 @@ static void get_sernum(void)
 		board_sernum[(i << 2)+4] = hex(sig & 0xf);
 	}
 }
-
 
 void board_init(void)
 {

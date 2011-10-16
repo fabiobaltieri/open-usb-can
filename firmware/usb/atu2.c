@@ -18,6 +18,7 @@
  * - enumeration often encounters an error -71 (from which it recovers)
  */
 
+#include <stdio.h>
 #include <stdint.h>
 
 #include <util/delay.h>
@@ -27,10 +28,6 @@
 #include "usb.h"
 #include "../board.h"
 #include "../defines.h"
-
-#ifndef NULL
-#define NULL 0
-#endif
 
 #if 1
 #define BUG_ON(cond)    do { if (cond) panic(); } while (0)
@@ -181,6 +178,7 @@ stall:
 
 static void ep_init(void)
 {
+	/* EP0 */
 	UENUM = 0;
 	UECONX = (1 << RSTDT) | (1 << EPEN);	/* enable */
 	UECFG0X = 0;	/* control, direction is ignored */
@@ -195,8 +193,7 @@ static void ep_init(void)
 	eps[0].state = EP_IDLE;
 	eps[0].size = 32;
 
-#ifndef BOOT_LOADER
-
+	/* EP1 */
 	UENUM = 1;
 	UECONX = (1 << RSTDT) | (1 << EPEN);	/* enable */
 	UECFG0X = (1 << EPTYPE1) | (0 << EPDIR); /* bulk OUT */
@@ -210,6 +207,7 @@ static void ep_init(void)
 	eps[1].state = EP_IDLE;
 	eps[1].size = 64;
 
+	/* EP2 */
 	UENUM = 2;
 	UECONX = (1 << RSTDT) | (1 << EPEN);	/* enable */
 	UECFG0X = (1 << EPTYPE1) | (1 << EPDIR); /* bulk IN */
@@ -222,8 +220,6 @@ static void ep_init(void)
 
 	eps[2].state = EP_IDLE;
 	eps[2].size = 64;
-
-#endif
 }
 
 

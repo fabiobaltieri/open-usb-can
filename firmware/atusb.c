@@ -47,7 +47,7 @@ void send_again (void *user)
 
 void recv_done (void *user)
 {
-	led_r_toggle();
+	led_a_toggle();
 	usb_recv(&eps[1], x+1, 16, recv_done, NULL);
 
 	lock++;
@@ -55,14 +55,13 @@ void recv_done (void *user)
 
 int main(void)
 {
-	LED_R_DDR |= _BV(LED_R);
-	LED_G_DDR |= _BV(LED_G);
+	board_init();
+
+	LED_A_DDR |= _BV(LED_A);
 	LED_B_DDR |= _BV(LED_B);
-	led_r_off();
-	led_g_off();
+	led_a_off();
 	led_b_off();
 
-	board_init();
 	board_app_init();
 
 	user_get_descriptor = sernum_get_descr;
@@ -83,7 +82,8 @@ int main(void)
 	_delay_ms(500);
 	_delay_ms(500);
 
-	led_g_on();
+	led_a_on();
+	led_b_on();
 
 	lock = 0;
 
