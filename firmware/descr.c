@@ -83,7 +83,7 @@ const uint8_t config_descriptor[] = {
 	USB_DT_ENDPOINT,	/* bDescriptorType */
 	0x82,			/* bEndPointAddress */
 	0x02,			/* bmAttributes (bulk) */
-	LE(EP1_SIZE),		/* wMaxPacketSize */
+	LE(EP2_SIZE),		/* wMaxPacketSize */
 	0,			/* bInterval */
 
 	/* Interface #1 */

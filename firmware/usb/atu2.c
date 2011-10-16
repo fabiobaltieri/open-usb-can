@@ -191,7 +191,7 @@ static void ep_init(void)
 	    (1 << RXSTPE) | (1 << RXOUTE) | (1 << STALLEDE) | (1 << TXINE);
 
 	eps[0].state = EP_IDLE;
-	eps[0].size = 32;
+	eps[0].size = EP0_SIZE;
 
 	/* EP1 */
 	UENUM = 1;
@@ -205,7 +205,7 @@ static void ep_init(void)
 	UEIENX = (1 << RXOUTE) | (1 << STALLEDE);
 
 	eps[1].state = EP_IDLE;
-	eps[1].size = 64;
+	eps[1].size = EP1_SIZE;
 
 	/* EP2 */
 	UENUM = 2;
@@ -219,7 +219,7 @@ static void ep_init(void)
 	UEIENX = (1 << STALLEDE) | (1 << TXINE);
 
 	eps[2].state = EP_IDLE;
-	eps[2].size = 64;
+	eps[2].size = EP2_SIZE;
 }
 
 

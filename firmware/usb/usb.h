@@ -94,13 +94,9 @@
 #define HI(x) (((uint8_t *) &(x))[1])
 
 
-#ifdef LOW_SPEED
-#define	EP0_SIZE	8
-#else
 #define	EP0_SIZE	32
-#endif
-
-#define	EP1_SIZE	64	/* simplify */
+#define	EP1_SIZE	64
+#define	EP2_SIZE	64
 
 
 enum ep_state {
