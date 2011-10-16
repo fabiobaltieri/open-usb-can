@@ -1,0 +1,6 @@
+*.o
+*.hex
+*.bin
+*.elf
+version.c
+.version
