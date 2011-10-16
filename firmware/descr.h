@@ -10,5 +10,10 @@
  * (at your option) any later version.
  */
 
-int strings_get_descr(uint8_t type, uint8_t index, const uint8_t **reply,
-    uint8_t *size);
+enum {
+	STRING_UNDEF = 0,
+	STRING_VENDOR,
+	STRING_PRODUCT,
+};
+
+int strings_get_descr(uint8_t type, uint8_t index, const uint8_t **reply, uint8_t *size);

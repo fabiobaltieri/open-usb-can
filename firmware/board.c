@@ -24,8 +24,6 @@
 
 #include "defines.h"
 
-uint8_t board_sernum[42] = { 42, USB_DT_STRING };
-
 void panic(void)
 {
 	cli();
@@ -36,24 +34,6 @@ void panic(void)
 		led_a_off();
 		led_b_off();
 		_delay_ms(100);
-	}
-}
-
-
-static char hex(uint8_t nibble)
-{
-	return nibble < 10 ? '0'+nibble : 'a'+nibble-10;
-}
-
-static void get_sernum(void)
-{
-	uint8_t sig;
-	int i;
-
-	for (i = 0; i != 10; i++) {
-		sig = boot_signature_byte_get(i+0xe);
-		board_sernum[(i << 2)+2] = hex(sig >> 4);
-		board_sernum[(i << 2)+4] = hex(sig & 0xf);
 	}
 }
 
@@ -70,6 +50,4 @@ void board_init(void)
 
 	CLKPR = 1 << CLKPCE;
 	CLKPR = 0;
-
-	get_sernum();
 }

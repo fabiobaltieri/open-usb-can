@@ -15,6 +15,7 @@
 #include "dfu.h"
 #include "board.h"
 
+#include "descr.h"
 
 #define LE(x) ((uint16_t) (x) & 0xff), ((uint16_t) (x) >> 8)
 
@@ -33,9 +34,9 @@ const uint8_t device_descriptor[18] = {
 	LE(USB_VENDOR),		/* idVendor */
 	LE(USB_PRODUCT),	/* idProduct */
 	LE(0x0001),		/* bcdDevice */
-	3,			/* iManufacturer */
-	2,			/* iProduct */
-	1,			/* iSerialNumber */
+	STRING_VENDOR,		/* iManufacturer */
+	STRING_PRODUCT,		/* iProduct */
+	0,			/* iSerialNumber */
 	1			/* bNumConfigurations */
 };
 
@@ -97,7 +98,7 @@ static const uint8_t string_descriptor_0[] = {
 	LE(USB_LANGID_ENGLISH_US)	/* wLANGID[0]  */
 };
 
-static const uint8_t string_descriptor_2[] = {
+static const uint8_t string_descriptor_product[] = {
 	26,				/* blength */
 	USB_DT_STRING,			/* bDescriptorType */
 	'O', '\0',
@@ -114,7 +115,7 @@ static const uint8_t string_descriptor_2[] = {
 	'N', '\0',
 };
 
-static const uint8_t string_descriptor_3[] = {
+static const uint8_t string_descriptor_vendor[] = {
 	12,				/* blength */
 	USB_DT_STRING,			/* bDescriptorType */
 	'B', '\0',
@@ -124,27 +125,23 @@ static const uint8_t string_descriptor_3[] = {
 	'o', '\0',
 };
 
-int strings_get_descr(uint8_t type, uint8_t index, const uint8_t **reply,
-    uint8_t *size)
+int strings_get_descr(uint8_t type, uint8_t index, const uint8_t **reply, uint8_t *size)
 {
 	if (type != USB_DT_STRING)
 		return 0;
+
 	switch (index) {
-	case 0:
+	case STRING_UNDEF:
 		*reply = string_descriptor_0;
 		*size = sizeof(string_descriptor_0);
 		return 1;
-	case 1:
-		*reply = board_sernum;
-		*size = sizeof(board_sernum);
+	case STRING_PRODUCT:
+		*reply = string_descriptor_product;
+		*size = sizeof(string_descriptor_product);
 		return 1;
-	case 2:
-		*reply = string_descriptor_2;
-		*size = sizeof(string_descriptor_2);
-		return 1;
-	case 3:
-		*reply = string_descriptor_3;
-		*size = sizeof(string_descriptor_3);
+	case STRING_VENDOR:
+		*reply = string_descriptor_vendor;
+		*size = sizeof(string_descriptor_vendor);
 		return 1;
 	default:
 		return 0;
