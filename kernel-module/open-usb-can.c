@@ -38,8 +38,8 @@ MODULE_LICENSE("GPL v2");
 #define OPEN_USB_CAN_CAN_CLOCK	16000000
 
 #define RX_BUFFER_SIZE		64
-#define MAX_RX_URBS		4
-#define MAX_TX_URBS		16 /* must be power of 2 */
+#define MAX_RX_URBS		8
+#define MAX_TX_URBS		8
 
 static struct usb_device_id open_usb_can_table[] = {
 	{USB_DEVICE(OPEN_USB_CAN_VENDOR_ID, OPEN_USB_CAN_PRODUCT_ID)},
