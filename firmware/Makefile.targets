@@ -1,0 +1,43 @@
+# Targets
+
+all: $(targets)
+
+main.elf: $(objects) $(deps)
+	$(CC) $(CFLAGS) -o $@ $(objects) $(LDFLAGS)
+	$(SIZE) $@
+
+%_text.hex: %.elf
+	$(OBJCOPY) -j .text -j .data -O ihex $< $@
+
+%_text.bin: %.elf
+	$(OBJCOPY) -j .text -j .data -O binary $< $@
+
+%_eeprom.hex: %.elf
+	$(OBJCOPY) -j .eeprom --change-section-lma .eeprom=0 -O ihex $< $@
+
+%_eeprom.bin: %.elf
+	$(OBJCOPY) -j .eeprom --change-section-lma .eeprom=0 -O binary $< $@
+
+load: $(targets)
+	if ! $(SIZE) -A main.elf | grep -q "eeprom" ; then \
+	  $(AVRDUDE) $(AVRDUDEFLAGS) -Uflash:w:main_text.hex ; \
+	else \
+	  $(AVRDUDE) $(AVRDUDEFLAGS) -Uflash:w:main_text.hex -Ueeprom:w:main_eeprom.hex ; \
+	fi
+
+fuse:
+	$(AVRDUDE) $(AVRDUDEFLAGS) -U lfuse:w:$(LFUSE):m -U hfuse:w:$(HFUSE):m
+
+dfu: $(targets)
+	$(DFUPROGRAMMER) $(DFU_FLAGS) erase
+	$(DFUPROGRAMMER) $(DFU_FLAGS) flash main_text.hex
+	$(DFUPROGRAMMER) $(DFU_FLAGS) start
+
+dfuu: $(targets)
+	$(DFU_UTIL) $(DFU_UTIL_FLAGS) -D main_text.bin
+
+.PHONY: clean
+
+clean:
+	rm -f $(targets) $(objects) *~
+
