@@ -10,8 +10,8 @@
  * (at your option) any later version.
  */
 
-#define	USB_VENDOR	0x20b7	/* Qi Hardware */
-#define	USB_PRODUCT	0x1540	/* ben-wpan atusb */
+#define	USB_VENDOR	0x03eb	/* Qi Hardware */
+#define	USB_PRODUCT	0xcab5	/* ben-wpan atusb */
 
 #define	BOARD_MAX_mA	40
 
