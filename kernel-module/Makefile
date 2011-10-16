@@ -1,7 +1,7 @@
 KERNELDIR ?= $(HOME)/linux
 PWD := $(shell pwd)
 
-obj-m := open-can-usb.o
+obj-m := open-usb-can.o
 
 default:
 	$(MAKE) -C $(KERNELDIR) M=$(PWD) modules
