@@ -10,14 +10,7 @@
  * (at your option) any later version.
  */
 
-
-#ifndef VERSION_H
-#define VERSION_H
-
 #include <stdint.h>
-
 
 extern const char *build_date;
 extern const uint16_t build_number;
-
-#endif /* !VERSION_H */

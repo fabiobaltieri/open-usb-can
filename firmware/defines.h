@@ -1,5 +1,3 @@
-#include <stdint.h>
-
 /* buttons */
 #define BUTTON_PORT PORC
 #define BUTTON_DDR  DDRC

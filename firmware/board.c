@@ -12,17 +12,15 @@
 
 
 #include <stdint.h>
-
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <avr/boot.h>
-
 #include <util/delay.h>
+
+#include "defines.h"
 
 #include "usb.h"
 #include "board.h"
-
-#include "defines.h"
 
 void panic(void)
 {

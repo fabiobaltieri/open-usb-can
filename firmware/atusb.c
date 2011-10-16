@@ -14,20 +14,17 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
-
 #include <avr/io.h>
 #include <avr/sleep.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
 
-#include "usb.h"
+#include "defines.h"
 
+#include "usb.h"
 #include "board.h"
 #include "descr.h"
 #include "ep0.h"
-
-#include "defines.h"
-
 
 static uint8_t x[64];
 static uint8_t lock;

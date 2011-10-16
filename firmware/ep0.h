@@ -11,9 +11,6 @@
  */
 
 
-#ifndef EP0_H
-#define EP0_H
-
 /*
  * Direction	bRequest		wValue		wIndex	wLength
  *
@@ -94,5 +91,3 @@ enum atspi_requests {
 };
 
 void ep0_init(void);
-
-#endif /* !EP0_H */

@@ -13,12 +13,10 @@
 
 #include <stdint.h>
 #include <string.h>
-
 #include <avr/io.h>
 
 #include "usb.h"
 #include "dfu.h"
-
 #include "ep0.h"
 #include "version.h"
 #include "board.h"
