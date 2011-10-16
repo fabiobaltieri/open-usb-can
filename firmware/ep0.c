@@ -22,7 +22,7 @@
 #include "ep0.h"
 #include "version.h"
 #include "board.h"
-#include "sernum.h"
+#include "descr.h"
 
 #define debug(...)
 #define error(...)
@@ -234,7 +234,7 @@ static void my_set_interface(int nth)
 		dfu.state = appIDLE;
 	} else {
 		user_setup = my_setup;
-		user_get_descriptor = sernum_get_descr;
+		user_get_descriptor = strings_get_descr;
 	}
 }
 

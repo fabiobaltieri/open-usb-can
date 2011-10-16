@@ -23,7 +23,7 @@
 #include "usb.h"
 
 #include "board.h"
-#include "sernum.h"
+#include "descr.h"
 #include "ep0.h"
 
 #include "defines.h"
@@ -64,7 +64,7 @@ int main(void)
 
 	board_app_init();
 
-	user_get_descriptor = sernum_get_descr;
+	user_get_descriptor = strings_get_descr;
 
 	/* now we should be at 8 MHz */
 

@@ -31,7 +31,7 @@
 #include "dfu.h"
 
 #include "../board.h"
-#include "../sernum.h"
+#include "../descr.h"
 
 
 #ifndef NULL
@@ -93,7 +93,7 @@ int dfu_my_descr(uint8_t type, uint8_t index, const uint8_t **reply,
     uint8_t *size)
 {
 	if (type != DFU_DT_FUNCTIONAL)
-		return sernum_get_descr(type, index, reply, size);
+		return strings_get_descr(type, index, reply, size);
 	*reply = functional_descriptor;
 	*size = sizeof(functional_descriptor);
 	return 1;
