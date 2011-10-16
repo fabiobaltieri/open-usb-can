@@ -27,7 +27,7 @@
 #include "ep0.h"
 #include "can.h"
 
-static uint8_t x[64];
+static uint8_t x[8];
 static uint16_t lock;
 
 void send_again (void *user)
@@ -59,9 +59,10 @@ static void led_init (void)
 	led_b_off();
 }
 
+struct can_frame cf[4];
+
 int main(void)
 {
-	struct can_frame cf;
 
 	board_init();
 	led_init();
@@ -76,7 +77,7 @@ int main(void)
 
 	sei();
 
-	memset(x, 0, 64);
+	memset(x, 0, 1);
 
 	_delay_ms(500);
 	_delay_ms(500);
@@ -92,14 +93,23 @@ int main(void)
 
 	/* send_again(x); */
 	memset(&cf, 0, sizeof(cf));
-	cf.can_id = 0xfab10 | CAN_EFF_FLAG;
-	cf.can_dlc = 4;
-	cf.data[0] = 0;
+	cf[0].can_id = 0xcf0 | CAN_EFF_FLAG;
+	cf[0].can_dlc = 8;
+	cf[0].data[0] = 0;
+	cf[1].can_id = 0xcf1 | CAN_EFF_FLAG;
+	cf[1].can_dlc = 1;
+	cf[1].data[0] = 0;
+	cf[2].can_id = 0xcf2 | CAN_EFF_FLAG;
+	cf[2].can_dlc = 1;
+	cf[2].data[0] = 0;
+	cf[3].can_id = 0xcf3 | CAN_EFF_FLAG;
+	cf[3].can_dlc = 1;
+	cf[3].data[0] = 0;
 	while (1) {
 		cli();
 		if (lock == 0 && eps[2].state == EP_IDLE) {
-			usb_send(&eps[2], &cf, sizeof(cf), send_again, NULL);
-			cf.data[0]++;
+			usb_send(&eps[2], cf, sizeof(struct can_frame),  send_again, NULL);
+			cf[0].data[0]++;
 		}
 		lock++;
 		sei();
