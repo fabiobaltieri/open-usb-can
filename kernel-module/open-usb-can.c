@@ -72,7 +72,7 @@ static void open_usb_can_read_bulk_callback(struct urb *urb)
 	struct open_usb_can *dev = urb->context;
         struct net_device *netdev = dev->netdev;
 	int retval;
-	int i;
+	int offset, i;
 
         struct can_frame *cf;
         struct can_frame *msg;
@@ -97,27 +97,38 @@ static void open_usb_can_read_bulk_callback(struct urb *urb)
 		goto resubmit_urb;
 	}
 
-	/* receive one CAN frame */
-	/* TODO: multiple message transfers */
+	/* receive CAN frames */
 
-        skb = alloc_can_skb(dev->netdev, &cf);
-        if (skb == NULL) {
-		dev_err(dev->udev->dev.parent,
-			"alloc_can_skb failed\n");
-                goto resubmit_urb;
+	offset = 0;
+	while (urb->actual_length - offset > 0) {
+		if (urb->actual_length - offset < 16) {
+			dev_err(dev->udev->dev.parent,
+				"Rx URB packet format error (%d bytes)\n",
+				urb->actual_length);
+			goto resubmit_urb;
+		}
+
+		skb = alloc_can_skb(dev->netdev, &cf);
+		if (skb == NULL) {
+			dev_err(dev->udev->dev.parent,
+				"alloc_can_skb failed\n");
+			goto resubmit_urb;
+		}
+
+		msg = (struct can_frame *)(urb->transfer_buffer + offset);
+
+		cf->can_id = le32_to_cpu(msg->can_id);
+		cf->can_dlc = msg->can_dlc;
+		for (i = 0; i < cf->can_dlc; i++)
+			cf->data[i] = msg->data[i];
+
+		netif_rx(skb);
+
+		stats->rx_packets++;
+		stats->rx_bytes += cf->can_dlc;
+
+		offset += sizeof(struct can_frame);
 	}
-
-	msg = (struct can_frame *)urb->transfer_buffer;
-
-        cf->can_id = le32_to_cpu(msg->can_id);
-        cf->can_dlc = msg->can_dlc;
-	for (i = 0; i < cf->can_dlc; i++)
-		cf->data[i] = msg->data[i];
-
-        netif_rx(skb);
-
-        stats->rx_packets++;
-        stats->rx_bytes += cf->can_dlc;
 
 resubmit_urb:
 	usb_fill_bulk_urb(urb, dev->udev, usb_rcvbulkpipe(dev->udev, 2),
