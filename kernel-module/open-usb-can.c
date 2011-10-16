@@ -88,6 +88,7 @@ static void open_usb_can_read_bulk_callback(struct urb *urb)
 
 	case -ENOENT:
 	case -ESHUTDOWN:
+	case -EILSEQ:
 		return;
 
 	default:
