@@ -94,6 +94,7 @@
 #define HI(x) (((uint8_t *) &(x))[1])
 
 
+#define	NUM_EPS		3
 #define	EP0_SIZE	32
 #define	EP1_SIZE	64
 #define	EP2_SIZE	64

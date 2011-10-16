@@ -22,14 +22,7 @@
 #define	DFU_USB_VENDOR	USB_VENDOR
 #define	DFU_USB_PRODUCT	USB_PRODUCT
 
-
 #define	BOARD_MAX_mA	40
-
-#ifdef BOOT_LOADER
-#define	NUM_EPS	1
-#else
-#define	NUM_EPS	3
-#endif
 
 #define	HAS_BOARD_SERNUM
 
