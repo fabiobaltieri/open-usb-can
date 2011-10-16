@@ -50,21 +50,22 @@ void recv_done (void *user)
 	lock++;
 }
 
-int main(void)
+static void led_init (void)
 {
-	board_init();
-
 	LED_A_DDR |= _BV(LED_A);
 	LED_B_DDR |= _BV(LED_B);
 	led_a_off();
 	led_b_off();
+}
 
-	user_get_descriptor = strings_get_descr;
-
-	/* now we should be at 8 MHz */
-
+int main(void)
+{
+	board_init();
+	led_init();
 	usb_init();
 	ep0_init();
+
+	user_get_descriptor = strings_get_descr;
 
 	/* move interrupt vectors to 0 */
 	MCUCR = 1 << IVCE;
