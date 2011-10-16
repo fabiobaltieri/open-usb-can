@@ -43,8 +43,7 @@ void board_init(void)
 
 	MCUSR = 0;		/* Remove override */
 	WDTCSR |= 1 << WDCE;	/* Enable change */
-	WDTCSR = 1 << WDCE;	/* Disable watchdog while still enabling
-				   change */
+	WDTCSR = 1 << WDCE;	/* Disable watchdog while still enabling change */
 
 	/* We start with a 1 MHz/8 clock. Disable the prescaler. */
 

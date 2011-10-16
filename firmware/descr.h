@@ -10,6 +10,11 @@
  * (at your option) any later version.
  */
 
+#define	USB_VENDOR	0x20b7	/* Qi Hardware */
+#define	USB_PRODUCT	0x1540	/* ben-wpan atusb */
+
+#define	BOARD_MAX_mA	40
+
 enum {
 	STRING_UNDEF = 0,
 	STRING_VENDOR,
