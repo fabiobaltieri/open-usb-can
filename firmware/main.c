@@ -59,8 +59,6 @@ int main(void)
 	led_a_off();
 	led_b_off();
 
-	board_app_init();
-
 	user_get_descriptor = strings_get_descr;
 
 	/* now we should be at 8 MHz */
