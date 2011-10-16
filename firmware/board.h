@@ -28,7 +28,7 @@
 #ifdef BOOT_LOADER
 #define	NUM_EPS	1
 #else
-#define	NUM_EPS	2
+#define	NUM_EPS	3
 #endif
 
 #define	HAS_BOARD_SERNUM

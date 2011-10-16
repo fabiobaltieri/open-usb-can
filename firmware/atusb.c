@@ -28,24 +28,39 @@
 
 #include "defines.h"
 
-char x[64];
 
-void send_again (void *user);
+static uint8_t x[64];
+static uint8_t lock;
+
 void send_again (void *user)
 {
-	uint8_t i;
-	LED_B_DDR |= _BV(LED_B);
+	/* uint8_t i; */
+
+	led_b_toggle();
+
 	x[0]++;
-	i = 2;
+	/* i = 2; */
 	/* i = (x[0] & 0x3) + 1; */
 	/* x[1] = i; */
-	usb_send(&eps[1], x, 16 * i, send_again, NULL);
+	/* usb_send(&eps[2], x, 16 * i, send_again, NULL); */
+}
 
+void recv_done (void *user)
+{
+	led_r_toggle();
+	usb_recv(&eps[1], x+1, 16, recv_done, NULL);
+
+	lock++;
 }
 
 int main(void)
 {
+	LED_R_DDR |= _BV(LED_R);
 	LED_G_DDR |= _BV(LED_G);
+	LED_B_DDR |= _BV(LED_B);
+	led_r_off();
+	led_g_off();
+	led_b_off();
 
 	board_init();
 	board_app_init();
@@ -67,16 +82,23 @@ int main(void)
 
 	_delay_ms(500);
 	_delay_ms(500);
-	_delay_ms(500);
-	_delay_ms(500);
-	_delay_ms(500);
-	_delay_ms(500);
 
-	while (eps[1].state);
+	led_g_on();
 
-	send_again(x);
+	lock = 0;
+
+	usb_recv(&eps[1], x, 16, recv_done, NULL);
+
+	/* send_again(x); */
 
 	while (1) {
+		cli();
+		if (lock && eps[2].state == EP_IDLE) {
+			usb_send(&eps[2], x, 32, send_again, NULL);
+			lock--;
+		}
+		sei();
+
 		sleep_mode();
 	}
 }

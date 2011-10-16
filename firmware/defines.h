@@ -38,6 +38,16 @@
 #define LED_B_DDR  DDRB
 #define LED_B PB7
 
+#define led_r_off()    LED_R_PORT |=  _BV(LED_R)
+#define led_r_on()     LED_R_PORT &= ~_BV(LED_R)
+#define led_r_toggle() LED_R_PORT ^=  _BV(LED_R)
+#define led_g_off()    LED_G_PORT |=  _BV(LED_G)
+#define led_g_on()     LED_G_PORT &= ~_BV(LED_G)
+#define led_g_toggle() LED_G_PORT ^=  _BV(LED_G)
+#define led_b_off()    LED_B_PORT |=  _BV(LED_B)
+#define led_b_on()     LED_B_PORT &= ~_BV(LED_B)
+#define led_b_toggle() LED_B_PORT ^=  _BV(LED_B)
+
 /* DF, on SPI */
 #define DF_CS_PORT PORTD
 #define DF_CS_DDR DDRD

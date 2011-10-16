@@ -26,7 +26,7 @@
 #include <avr/interrupt.h>
 #include "usb.h"
 #include "../board.h"
-
+#include "../defines.h"
 
 #ifndef NULL
 #define NULL 0
@@ -108,7 +108,7 @@ static int ep_rx(struct ep_descr *ep)
 		ep->state = EP_IDLE;
 		if (ep->callback)
 			ep->callback(ep->user);
-//		if (ep == &eps[0])
+		if (ep == &eps[0])
 			usb_send(ep, NULL, 0, NULL, NULL);
 	}
 	return 1;
@@ -184,7 +184,7 @@ static void ep_init(void)
 	UENUM = 0;
 	UECONX = (1 << RSTDT) | (1 << EPEN);	/* enable */
 	UECFG0X = 0;	/* control, direction is ignored */
-	UECFG1X = 3 << EPSIZE0;	/* 64 bytes */
+	UECFG1X = 2 << EPSIZE0;	/* 32 bytes */
 	UECFG1X |= 1 << ALLOC;
 
 	while (!(UESTA0X & (1 << CFGOK)));
@@ -193,11 +193,24 @@ static void ep_init(void)
 	    (1 << RXSTPE) | (1 << RXOUTE) | (1 << STALLEDE) | (1 << TXINE);
 
 	eps[0].state = EP_IDLE;
-	eps[0].size = 64;
+	eps[0].size = 32;
 
 #ifndef BOOT_LOADER
 
 	UENUM = 1;
+	UECONX = (1 << RSTDT) | (1 << EPEN);	/* enable */
+	UECFG0X = (1 << EPTYPE1) | (0 << EPDIR); /* bulk OUT */
+	UECFG1X = 3 << EPSIZE0;	/* 64 bytes */
+	UECFG1X |= 1 << ALLOC;
+
+	while (!(UESTA0X & (1 << CFGOK)));
+
+	UEIENX = (1 << RXOUTE) | (1 << STALLEDE);
+
+	eps[1].state = EP_IDLE;
+	eps[1].size = 64;
+
+	UENUM = 2;
 	UECONX = (1 << RSTDT) | (1 << EPEN);	/* enable */
 	UECFG0X = (1 << EPTYPE1) | (1 << EPDIR); /* bulk IN */
 	UECFG1X = 3 << EPSIZE0;	/* 64 bytes */
@@ -207,8 +220,8 @@ static void ep_init(void)
 
 	UEIENX = (1 << STALLEDE) | (1 << TXINE);
 
-	eps[1].state = EP_IDLE;
-	eps[1].size = 64;
+	eps[2].state = EP_IDLE;
+	eps[2].size = 64;
 
 #endif
 }
