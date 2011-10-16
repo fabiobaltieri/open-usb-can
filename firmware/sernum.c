@@ -25,6 +25,32 @@ static const uint8_t string_descriptor_0[] = {
 	LE(USB_LANGID_ENGLISH_US)	/* wLANGID[0]  */
 };
 
+static const uint8_t string_descriptor_2[] = {
+	26,				/* blength */
+	USB_DT_STRING,			/* bDescriptorType */
+	'O', '\0',
+	'p', '\0',
+	'e', '\0',
+	'n', '\0',
+	' ', '\0',
+	'U', '\0',
+	'S', '\0',
+	'B', '\0',
+	'-', '\0',
+	'C', '\0',
+	'A', '\0',
+	'N', '\0',
+};
+
+static const uint8_t string_descriptor_3[] = {
+	12,				/* blength */
+	USB_DT_STRING,			/* bDescriptorType */
+	'B', '\0',
+	'a', '\0',
+	'l', '\0',
+	't', '\0',
+	'o', '\0',
+};
 
 int sernum_get_descr(uint8_t type, uint8_t index, const uint8_t **reply,
     uint8_t *size)
@@ -39,6 +65,14 @@ int sernum_get_descr(uint8_t type, uint8_t index, const uint8_t **reply,
 	case 1:
 		*reply = board_sernum;
 		*size = sizeof(board_sernum);
+		return 1;
+	case 2:
+		*reply = string_descriptor_2;
+		*size = sizeof(string_descriptor_2);
+		return 1;
+	case 3:
+		*reply = string_descriptor_3;
+		*size = sizeof(string_descriptor_3);
 		return 1;
 	default:
 		return 0;

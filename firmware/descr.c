@@ -33,8 +33,8 @@ const uint8_t device_descriptor[18] = {
 	LE(USB_VENDOR),		/* idVendor */
 	LE(USB_PRODUCT),	/* idProduct */
 	LE(0x0001),		/* bcdDevice */
-	0,			/* iManufacturer */
-	0,			/* iProduct */
+	3,			/* iManufacturer */
+	2,			/* iProduct */
 	1,			/* iSerialNumber */
 	1			/* bNumConfigurations */
 };
