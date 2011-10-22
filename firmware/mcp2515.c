@@ -137,7 +137,7 @@ uint8_t mcp2515_has_data (void)
   return (ret & (CANINTF_RX0IF | CANINTF_RX1IF));
 }
 
-void mcp2515_init (void)
+void mcp2515_init (uint8_t clkpre)
 {
   mcp2515_reset();
 
@@ -147,7 +147,8 @@ void mcp2515_init (void)
   mcp2515_write_reg(CNF2, 0xac);
   mcp2515_write_reg(CNF3, 0x03);
 
-  mcp2515_write_reg(CANCTRL, 0x00);
+  mcp2515_write_reg(CANCTRL,
+		    CANCTRL_REQOP_CONF | 0x04 | (clkpre & 0x03));
 
   _delay_ms(10);
 }

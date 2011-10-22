@@ -117,7 +117,7 @@
 #define SPI_TRANSFER_BUF_LEN    (6 + CAN_FRAME_MAX_DATA_LEN)
 #define CAN_FRAME_MAX_BITS      128
 
-void mcp2515_init (void);
+void mcp2515_init (uint8_t clkpre);
 uint8_t mcp2515_tx (struct can_frame * frame);
 void mcp2515_rx (struct can_frame * frame);
 uint8_t mcp2515_has_data (void);

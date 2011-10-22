@@ -25,7 +25,9 @@
 #include "board.h"
 #include "descr.h"
 #include "ep0.h"
+#include "spi.h"
 #include "can.h"
+#include "mcp2515.h"
 
 static uint8_t x[8];
 static uint16_t lock;
@@ -55,9 +57,11 @@ struct can_frame cf[4];
 
 int main(void)
 {
-
 	board_init();
 	led_init();
+	spi_init();
+	mcp2515_init(1);
+
 	usb_init();
 	ep0_init();
 
