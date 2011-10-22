@@ -51,14 +51,6 @@ void recv_done (void *user)
 	//lock++;
 }
 
-static void led_init (void)
-{
-	LED_A_DDR |= _BV(LED_A);
-	LED_B_DDR |= _BV(LED_B);
-	led_a_off();
-	led_b_off();
-}
-
 struct can_frame cf[4];
 
 int main(void)
