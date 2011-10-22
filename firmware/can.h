@@ -25,7 +25,7 @@ typedef uint32_t canid_t;
  * @data:    the CAN frame payload.
  */
 struct can_frame {
-        canid_t can_id;  /* 32 bit CAN_ID + EFF/RTR/ERR flags */
-        uint8_t can_dlc; /* data length code: 0 .. 8 */
-        uint8_t data[8] __attribute__((aligned(8)));
+	canid_t can_id;  /* 32 bit CAN_ID + EFF/RTR/ERR flags */
+	uint8_t can_dlc; /* data length code: 0 .. 8 */
+	uint8_t data[8];
 };

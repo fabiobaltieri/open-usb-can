@@ -27,33 +27,8 @@
 #include "ep0.h"
 #include "spi.h"
 #include "can.h"
+#include "buffer.h"
 #include "mcp2515.h"
-
-static uint8_t x[8];
-static uint16_t lock;
-
-void send_again (void *user)
-{
-	/* uint8_t i; */
-
-	led_b_toggle();
-
-	x[0]++;
-	/* i = 2; */
-	/* i = (x[0] & 0x3) + 1; */
-	/* x[1] = i; */
-	/* usb_send(&eps[2], x, 16 * i, send_again, NULL); */
-}
-
-void recv_done (void *user)
-{
-	led_a_toggle();
-	usb_recv(&eps[1], x+1, 16, recv_done, NULL);
-
-	//lock++;
-}
-
-struct can_frame cf[4];
 
 int main(void)
 {
@@ -73,42 +48,15 @@ int main(void)
 
 	sei();
 
-	memset(x, 0, 1);
-
-	_delay_ms(500);
-	_delay_ms(500);
-	_delay_ms(500);
-	_delay_ms(500);
-
 	led_a_on();
 	led_b_on();
+	_delay_ms(20);
+	led_a_off();
+	led_b_off();
 
-	lock = 0;
-
-	usb_recv(&eps[1], x, 16, recv_done, NULL);
-
-	/* send_again(x); */
-	memset(&cf, 0, sizeof(cf));
-	cf[0].can_id = 0xcf0 | CAN_EFF_FLAG;
-	cf[0].can_dlc = 8;
-	cf[0].data[0] = 0;
-	cf[1].can_id = 0xcf1 | CAN_EFF_FLAG;
-	cf[1].can_dlc = 1;
-	cf[1].data[0] = 0;
-	cf[2].can_id = 0xcf2 | CAN_EFF_FLAG;
-	cf[2].can_dlc = 1;
-	cf[2].data[0] = 0;
-	cf[3].can_id = 0xcf3 | CAN_EFF_FLAG;
-	cf[3].can_dlc = 1;
-	cf[3].data[0] = 0;
 	while (1) {
-		cli();
-		if (lock == 0 && eps[2].state == EP_IDLE) {
-			usb_send(&eps[2], cf, sizeof(struct can_frame),  send_again, NULL);
-			cf[0].data[0]++;
-		}
-		lock++;
-		sei();
+		buffer_tx_process();
+		buffer_rx_process();
 
 		//sleep_mode();
 	}
