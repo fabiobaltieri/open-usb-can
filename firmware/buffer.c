@@ -13,7 +13,7 @@
 
 #include "defines.h"
 
-#define TXBUFSZ 16
+#define TXBUFSZ 32
 static struct can_frame tx_buf[TXBUFSZ];
 static volatile uint8_t tx_buf_w;
 static volatile uint8_t tx_buf_r;
