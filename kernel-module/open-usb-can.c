@@ -51,7 +51,7 @@ struct usb_header {
 	uint8_t frame_count;
 	uint8_t spare0;
 	uint8_t spare1;
-	uint8_t buf_level;
+	uint8_t free_slots;
 } __packed;
 
 #define RX_MAX_FRAMES 4
@@ -152,6 +152,11 @@ static void open_usb_can_read_bulk_callback(struct urb *urb)
 		stats->rx_packets++;
 		stats->rx_bytes += frm->can_dlc;
 	}
+
+	if (msg->hdr.free_slots < 5)
+		netif_stop_queue(netdev);
+	else if (netif_queue_stopped(netdev))
+                netif_wake_queue(netdev);
 
 resubmit_urb:
 	usb_fill_bulk_urb(urb, dev->udev, usb_rcvbulkpipe(dev->udev, 2),

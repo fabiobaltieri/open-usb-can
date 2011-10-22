@@ -99,7 +99,7 @@ void buffer_rx_process (void)
 		size = sizeof(struct usb_header) +
 			sizeof(struct can_frame) * rx_buf[rx_slot].hdr.frame_count;
 
-		rx_buf[rx_slot].hdr.buf_level = tx_buf_count;
+		rx_buf[rx_slot].hdr.free_slots = TXBUFSZ - tx_buf_count;
 
 		usb_send(&eps[2], (uint8_t *)&rx_buf[rx_slot],
 			 size, buffer_rx_done, &rx_buf[rx_slot]);

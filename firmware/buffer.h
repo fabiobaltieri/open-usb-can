@@ -2,7 +2,7 @@ struct usb_header {
         uint8_t frame_count;
 	uint8_t spare0;
 	uint8_t spare1;
-	uint8_t buf_level;
+	uint8_t free_slots;
 };
 
 #define RX_MAX_FRAMES 4
