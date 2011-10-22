@@ -121,3 +121,4 @@ void mcp2515_init (uint8_t clkpre);
 uint8_t mcp2515_tx (struct can_frame * frame);
 void mcp2515_rx (struct can_frame * frame);
 uint8_t mcp2515_has_data (void);
+uint8_t mcp2515_txbuf_empty (void);
