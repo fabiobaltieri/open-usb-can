@@ -41,6 +41,29 @@ MODULE_LICENSE("GPL v2");
 #define MAX_RX_URBS		8
 #define MAX_TX_URBS		8
 
+struct open_usb_can_frame {
+	canid_t can_id;  /* 32 bit CAN_ID + EFF/RTR/ERR flags */
+	uint8_t can_dlc; /* data length code: 0 .. 8 */
+	uint8_t data[8];
+} __packed;
+
+struct usb_header {
+	uint8_t frame_count;
+	uint8_t spare0;
+	uint8_t spare1;
+	uint8_t buf_level;
+} __packed;
+
+#define RX_MAX_FRAMES 4
+
+struct usb_rx_buffer {
+	struct usb_header hdr;
+	struct open_usb_can_frame frames[RX_MAX_FRAMES];
+} __packed;
+
+#define HDR_SIZE(count) (sizeof(struct usb_header) + \
+			 sizeof(struct open_usb_can_frame) * count)
+
 static struct usb_device_id open_usb_can_table[] = {
 	{USB_DEVICE(OPEN_USB_CAN_VENDOR_ID, OPEN_USB_CAN_PRODUCT_ID)},
 	{}
@@ -72,10 +95,10 @@ static void open_usb_can_read_bulk_callback(struct urb *urb)
 	struct open_usb_can *dev = urb->context;
         struct net_device *netdev = dev->netdev;
 	int retval;
-	int offset, i;
+	int i, j;
 
         struct can_frame *cf;
-        struct can_frame *msg;
+        struct usb_rx_buffer *msg;
         struct sk_buff *skb;
         struct net_device_stats *stats = &dev->netdev->stats;
 
@@ -99,14 +122,18 @@ static void open_usb_can_read_bulk_callback(struct urb *urb)
 
 	/* receive CAN frames */
 
-	offset = 0;
-	while (urb->actual_length - offset > 0) {
-		if (urb->actual_length - offset < 16) {
-			dev_err(dev->udev->dev.parent,
-				"Rx URB packet format error (%d bytes)\n",
-				urb->actual_length);
-			goto resubmit_urb;
-		}
+	msg = (struct usb_rx_buffer *)urb->transfer_buffer;
+
+	if (urb->actual_length < HDR_SIZE(msg->hdr.frame_count)) {
+		dev_info(dev->udev->dev.parent,
+			 "Malformed USB RX packet (frames=%d, length=%d), dropped.\n",
+			 msg->hdr.frame_count,
+			 urb->actual_length);
+		goto resubmit_urb;
+	}
+
+	for (i = 0; i < msg->hdr.frame_count; i++) {
+		struct open_usb_can_frame * frm = &msg->frames[i];
 
 		skb = alloc_can_skb(dev->netdev, &cf);
 		if (skb == NULL) {
@@ -115,19 +142,15 @@ static void open_usb_can_read_bulk_callback(struct urb *urb)
 			goto resubmit_urb;
 		}
 
-		msg = (struct can_frame *)(urb->transfer_buffer + offset);
-
-		cf->can_id = le32_to_cpu(msg->can_id);
-		cf->can_dlc = msg->can_dlc;
-		for (i = 0; i < cf->can_dlc; i++)
-			cf->data[i] = msg->data[i];
+		cf->can_id = le32_to_cpu(frm->can_id);
+		cf->can_dlc = frm->can_dlc;
+		for (j = 0; j < frm->can_dlc; j++)
+			cf->data[j] = frm->data[j];
 
 		netif_rx(skb);
 
 		stats->rx_packets++;
-		stats->rx_bytes += cf->can_dlc;
-
-		offset += sizeof(struct can_frame);
+		stats->rx_bytes += frm->can_dlc;
 	}
 
 resubmit_urb:
@@ -342,12 +365,12 @@ static netdev_tx_t open_usb_can_start_xmit(struct sk_buff *skb,
 	struct usb_tx_urb_context *context = NULL;
 	struct net_device_stats *stats = &netdev->stats;
 	struct can_frame *cf = (struct can_frame *)skb->data;
-	struct can_frame *msg;
+	struct open_usb_can_frame *msg;
 	struct urb *urb;
 	u8 *buf;
 	int i, err;
 	int ret = NETDEV_TX_OK;
-	size_t size = sizeof(struct can_frame);
+	size_t size = sizeof(struct open_usb_can_frame);
 
 	if (can_dropped_invalid_skb(netdev, skb))
 		return NETDEV_TX_OK;
@@ -366,7 +389,7 @@ static netdev_tx_t open_usb_can_start_xmit(struct sk_buff *skb,
 		goto nobufmem;
 	}
 
-	msg = (struct can_frame *)buf;
+	msg = (struct open_usb_can_frame *)buf;
 
 	msg->can_id = cpu_to_le32(cf->can_id);
 	msg->can_dlc = cf->can_dlc;
