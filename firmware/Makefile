@@ -9,12 +9,11 @@ AVRDUDE	= avrdude
 DFUPROGRAMMER = dfu-programmer
 DFU_UTIL = dfu-util
 
-MCU = at90usb162
-BOOT_ADDR=0x3000
+MCU = atmega32u2
 F_CPU=8000000
 
 # Options
-CFLAGS	= -Os -Iusb -Wall -mmcu=$(MCU) -DBOOT_ADDR=$(BOOT_ADDR) -DF_CPU=$(F_CPU)
+CFLAGS	= -Os -Iusb -Wall -mmcu=$(MCU) -DF_CPU=$(F_CPU)
 ASFLAGS	= 
 LDFLAGS	= 
 
@@ -23,8 +22,8 @@ DFU_FLAGS = at90usb162
 DFU_UTIL_FLAGS = -R
 
 # for ATxx
-LFUSE=0x
-HFUSE=0x
+LFUSE=0xd0
+HFUSE=0xd9
 
 targets	= main.elf main_text.hex main_text.bin main_eeprom.hex main_eeprom.bin
 objects	= version.o main.o board.o descr.o ep0.o usb/dfu_common.o usb/usb.o usb/atu2.o
