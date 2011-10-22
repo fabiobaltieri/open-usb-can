@@ -30,6 +30,25 @@
 #include "buffer.h"
 #include "mcp2515.h"
 
+void hello (void)
+{
+	uint8_t i;
+
+	_delay_ms(100);
+
+	for (i = 0; i < 5; i++) {
+		led_a_on();
+		led_b_on();
+
+		_delay_ms(50);
+		
+		led_a_off();
+		led_b_off();
+		
+		_delay_ms(50);
+	}
+}
+
 int main(void)
 {
 	board_init();
@@ -48,11 +67,7 @@ int main(void)
 
 	sei();
 
-	led_a_on();
-	led_b_on();
-	_delay_ms(20);
-	led_a_off();
-	led_b_off();
+	hello();
 
 	while (1) {
 		buffer_tx_process();
