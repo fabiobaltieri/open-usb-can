@@ -84,7 +84,7 @@ void buffer_rx_process (void)
 		
 		offset = &rx_buf[rx_slot].hdr.frame_count;
 
-		if (*offset < RX_FRAME_COUNT) {
+		if (*offset < RX_MAX_FRAMES) {
 			mcp2515_rx(&rx_buf[rx_slot].frames[*offset]);
 		
 			(*offset)++;
