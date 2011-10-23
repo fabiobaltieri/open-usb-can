@@ -93,10 +93,10 @@
 #define LO(x) (((uint8_t *) &(x))[0])
 #define HI(x) (((uint8_t *) &(x))[1])
 
-
+/* NOTE: keep EP config syncronized with ep_init() in atu2.c */
 #define	NUM_EPS		3
-#define	EP0_SIZE	32
-#define	EP1_SIZE	64
+#define	EP0_SIZE	64
+#define	EP1_SIZE	32
 #define	EP2_SIZE	64
 
 
