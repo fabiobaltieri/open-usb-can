@@ -54,6 +54,9 @@ int main(void)
 	board_init();
 	led_init();
 	spi_init();
+
+	_delay_ms(10);
+
 	mcp2515_init(1);
 
 	usb_init();
