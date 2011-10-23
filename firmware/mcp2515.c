@@ -7,7 +7,7 @@
 #include "spi.h"
 #include "mcp2515.h"
 
-static uint8_t mcp2515_read_reg (uint8_t addr)
+uint8_t mcp2515_read_reg (uint8_t addr)
 {
 	uint8_t ret;
   
@@ -24,7 +24,7 @@ static uint8_t mcp2515_read_reg (uint8_t addr)
 	return ret;
 }
 
-static void mcp2515_write_reg (uint8_t addr, uint8_t data)
+void mcp2515_write_reg (uint8_t addr, uint8_t data)
 {
 	can_cs_l();
   
