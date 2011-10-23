@@ -6,7 +6,8 @@
 
 void spi_init (void)
 {
-  SPI_DDR |= _BV(SPI_SCK) | _BV(SPI_MOSI) | _BV(SPI_SS);
+  SPI_DDR  |= _BV(SPI_SCK) | _BV(SPI_MOSI) | _BV(SPI_SS);
+  SPI_PORT |= _BV(SPI_SS);
   
   SPCR = ( (0 << SPIE) |
 	   (1 << SPE)  |
