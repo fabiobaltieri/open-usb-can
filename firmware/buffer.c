@@ -42,7 +42,7 @@ static void buffer_tx_prepare (void)
 		usb_recv(&eps[1], (uint8_t *)&tx_buf[tx_buf_w],
 			 sizeof(struct can_frame),
 			 buffer_tx_done, NULL);
-		
+
 		tx_buf_w = (tx_buf_w + 1) % TXBUFSZ;
 	}
 }
@@ -53,25 +53,22 @@ void buffer_tx_process (void)
 	buffer_tx_prepare();
 	sei();
 
-	if (tx_buf_count > 0 /*&& mcp2515_txbuf_empty()*/) {
-		/*
+	if (tx_buf_count > 0 && mcp2515_txbuf_empty()) {
 		mcp2515_tx(&tx_buf[tx_buf_r]);
-		*/
-		led_a_on();
-		_delay_ms(33);
-		led_a_off();
 
 		tx_buf_r = (tx_buf_r + 1) % TXBUFSZ;
 		tx_buf_count--;
 
 		update_needed = 1;
+
+		led_a_toggle();
 	}
 }
 
 static void buffer_rx_done (void *user)
 {
 	struct usb_rx_buffer *rxb;
-	
+
 	rxb = user;
 
 	memset(rxb, 0, sizeof(struct usb_rx_buffer));
@@ -81,13 +78,15 @@ void buffer_rx_process (void)
 {
 	if (mcp2515_has_data()) {
 		uint8_t *offset;
-		
+
 		offset = &rx_buf[rx_slot].hdr.frame_count;
 
 		if (*offset < RX_MAX_FRAMES) {
 			mcp2515_rx(&rx_buf[rx_slot].frames[*offset]);
-		
+
 			(*offset)++;
+
+			led_b_toggle();
 		}
 	}
 
@@ -95,7 +94,7 @@ void buffer_rx_process (void)
 	if (eps[2].state == EP_IDLE &&
 	    (update_needed || rx_buf[rx_slot].hdr.frame_count > 0)) {
 		uint8_t size;
-		
+
 		size = sizeof(struct usb_header) +
 			sizeof(struct can_frame) * rx_buf[rx_slot].hdr.frame_count;
 
