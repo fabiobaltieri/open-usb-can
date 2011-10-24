@@ -38,7 +38,7 @@
  * Direction	bRequest		wValue		wIndex	wLength
  */
 
-enum atusb_requests {
+enum control_requests {
 /* system status/control grp
  *
  * ->host	ATUSB_ID		-		-	2
@@ -74,6 +74,18 @@ enum atusb_requests {
 	ATUSB_SPI_WRITE2,
 	ATUSB_SPI_READ1,
 	ATUSB_SPI_READ2,
+
+/* CANBUS group
+ *
+ * host->	ATUSB_CAN_PUT_CONFIG	-		-	#bytes
+ * ->host	ATUSB_CAN_GET_CONFIG	-		-	#bytes
+ * host->	ATUSB_CAN_START 	-		-	0
+ * host->	ATUSB_CAN_STOP  	-		-	0
+ */
+	ATUSB_CAN_PUT_CONFIG		= 0x40,
+	ATUSB_CAN_GET_CONFIG,
+	ATUSB_CAN_START,
+	ATUSB_CAN_STOP,
 };
 
 void ep0_init(void);

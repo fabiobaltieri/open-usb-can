@@ -2,10 +2,13 @@
 
 #include <avr/io.h>
 #include <util/delay.h>
+#include <string.h>
 
 #include "can.h"
 #include "spi.h"
 #include "mcp2515.h"
+
+struct can_config can_cfg;
 
 uint8_t mcp2515_read_reg (uint8_t addr)
 {
@@ -146,18 +149,26 @@ uint8_t mcp2515_has_data (void)
 	return (ret & (CANINTF_RX0IF | CANINTF_RX1IF));
 }
 
+uint8_t mcp2515_start (void)
+{
+	return 0;
+}
+
+uint8_t mcp2515_stop (void)
+{
+	return 0;
+}
+
 void mcp2515_init (uint8_t clkpre)
 {
 	mcp2515_reset();
 
 	_delay_ms(10);
 
-	mcp2515_write_reg(CNF1, 0x41);
-	mcp2515_write_reg(CNF2, 0xac);
-	mcp2515_write_reg(CNF3, 0x03);
-
 	mcp2515_write_reg(CANCTRL,
 			  CANCTRL_REQOP_CONF | 0x04 | (clkpre & 0x03));
 
 	_delay_ms(10);
+
+	memset(&can_cfg, 0, sizeof(can_cfg));
 }

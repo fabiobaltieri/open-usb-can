@@ -29,3 +29,15 @@ struct can_frame {
 	uint8_t can_dlc; /* data length code: 0 .. 8 */
 	uint8_t data[8];
 };
+
+#define CAN_CTRLMODE_LOOPBACK           0x01    /* Loopback mode */
+#define CAN_CTRLMODE_LISTENONLY         0x02    /* Listen-only mode */
+#define CAN_CTRLMODE_3_SAMPLES          0x04    /* Triple sampling mode */
+struct can_config {
+	uint8_t mode;		/* Bus mode */
+	uint8_t prop_seg;	/* Propagation segment in TQs */
+	uint8_t phase_seg1;	/* Phase buffer segment 1 in TQs */
+	uint8_t phase_seg2;	/* Phase buffer segment 2 in TQs */
+	uint8_t sjw;		/* Synchronisation jump width in TQs */
+	uint8_t brp;		/* Bit-rate prescaler */
+};

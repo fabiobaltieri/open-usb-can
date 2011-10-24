@@ -141,6 +141,28 @@ static int my_setup(const struct setup_request *setup)
 		usb_send(&eps[0], buf, setup->wLength, NULL, NULL);
 		return 1;
 
+	case ATUSB_TO_DEV(ATUSB_CAN_PUT_CONFIG):
+		if (setup->wLength != sizeof(can_cfg))
+			return 0;
+		usb_recv(&eps[0], (uint8_t *)&can_cfg,
+			 setup->wLength, NULL, NULL);
+		return 1;
+
+	case ATUSB_FROM_DEV(ATUSB_CAN_GET_CONFIG):
+		if (setup->wLength != sizeof(can_cfg))
+			return 0;
+		usb_send(&eps[0], (uint8_t *)&can_cfg,
+			 setup->wLength, NULL, NULL);
+		return 1;
+
+	case ATUSB_TO_DEV(ATUSB_CAN_START):
+		mcp2515_start();
+		return 1;
+
+	case ATUSB_TO_DEV(ATUSB_CAN_STOP):
+		mcp2515_stop();
+		return 1;
+
 	default:
 		error("Unrecognized SETUP: 0x%02x 0x%02x ...\n",
 		    setup->bmRequestType, setup->bRequest);
