@@ -81,17 +81,28 @@ enum control_requests {
 
 /* CANBUS group
  *
- * host->	ATUSB_CAN_CONFIG	-		-	#bytes
+ * host->	ATUSB_CAN_PUT_CONFIG	-		-	#bytes
+ * ->host	ATUSB_CAN_GET_CONFIG	-		-	#bytes
  * host->	ATUSB_CAN_START		-		-	0
  * host->	ATUSB_CAN_STOP		-		-	0
  */
-	ATUSB_CAN_CONFIG		= 0x40,
+	ATUSB_CAN_PUT_CONFIG		= 0x40,
+	ATUSB_CAN_GET_CONFIG,
 	ATUSB_CAN_START,
 	ATUSB_CAN_STOP,
 };
 
 #define ATUSB_FROM_DEV (USB_TYPE_VENDOR | USB_DIR_IN)
 #define ATUSB_TO_DEV (USB_TYPE_VENDOR | USB_DIR_OUT)
+
+struct open_usb_can_config {
+        uint8_t mode;           /* Bus mode */
+        uint8_t prop_seg;       /* Propagation segment in TQs */
+        uint8_t phase_seg1;     /* Phase buffer segment 1 in TQs */
+        uint8_t phase_seg2;     /* Phase buffer segment 2 in TQs */
+        uint8_t sjw;            /* Synchronisation jump width in TQs */
+        uint8_t brp;            /* Bit-rate prescaler */
+} __packed;
 
 struct open_usb_can_frame {
 	canid_t can_id;  /* 32 bit CAN_ID + EFF/RTR/ERR flags */
@@ -574,19 +585,35 @@ static int open_usb_can_set_bittiming(struct net_device *netdev)
 {
 	struct open_usb_can *dev = netdev_priv(netdev);
 	struct can_bittiming *bt = &dev->can.bittiming;
+	struct open_usb_can_config cfg;
+	int retval;
 
 	dev_info(netdev->dev.parent, "setting timing for %d bps = %d %d %d %d %d %d\n",
 		 bt->bitrate,
-		 bt->sjw,
-		 bt->brp,
 		 dev->can.ctrlmode,
+		 bt->prop_seg,
 		 bt->phase_seg1,
 		 bt->phase_seg2,
-		 bt->prop_seg);
+		 bt->sjw,
+		 bt->brp
+		);
 
-	/* TODO: control writes for each parameter*/
+	cfg.mode = dev->can.ctrlmode;
+	cfg.prop_seg = bt->prop_seg;
+	cfg.phase_seg1 = bt->phase_seg1;
+	cfg.phase_seg2 = bt->phase_seg2;
+	cfg.sjw = bt->sjw;
+	cfg.brp = bt->brp;
 
-	/* return open_usb_can_send_msg(dev->usb2, &msg); */
+	retval = usb_control_msg(dev->udev,
+				 usb_sndctrlpipe(dev->udev, 0),
+				 ATUSB_CAN_PUT_CONFIG, ATUSB_TO_DEV, 0, 0,
+				 &cfg, sizeof(cfg), 1000);
+	if (retval < 0) {
+                dev_err(&dev->udev->dev,
+                        "%s: error sending bus configuration = %d\n",
+                        __func__, retval);
+        }
 
 	return 0;
 }
@@ -661,7 +688,8 @@ static int open_usb_can_probe(struct usb_interface *intf,
 	dev->can.do_set_bittiming = open_usb_can_set_bittiming;
 	dev->can.do_set_mode = open_usb_can_set_mode;
 	/* dev->can.do_get_berr_counter = open_usb_can_get_berr_counter; */
-	dev->can.ctrlmode_supported = CAN_CTRLMODE_3_SAMPLES;
+	dev->can.ctrlmode_supported = CAN_CTRLMODE_3_SAMPLES |
+		CAN_CTRLMODE_LISTENONLY | CAN_CTRLMODE_LOOPBACK;
 
 	netdev->netdev_ops = &open_usb_can_netdev_ops;
 
