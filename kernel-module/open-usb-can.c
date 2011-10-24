@@ -376,7 +376,15 @@ static int open_usb_can_start(struct open_usb_can *dev)
 	if (err)
 		goto failed;
 
-	/* TODO: usb start */
+	err = usb_control_msg(dev->udev,
+				 usb_sndctrlpipe(dev->udev, 0),
+				 ATUSB_CAN_START, ATUSB_TO_DEV, 0, 0,
+				 NULL, 0, 1000);
+	if (err < 0) {
+                dev_err(&dev->udev->dev,
+                        "%s: error sending start control command = %d\n",
+                        __func__, err);
+        }
 
 	dev->can.state = CAN_STATE_ERROR_ACTIVE;
 
@@ -549,12 +557,21 @@ nourbmem:
 static int open_usb_can_close(struct net_device *netdev)
 {
 	struct open_usb_can *dev = netdev_priv(netdev);
+	int err;
 
 	unlink_all_urbs(dev);
 
 	netif_stop_queue(netdev);
 
-	/* TODO: set CAN controller to reset mode */
+	err = usb_control_msg(dev->udev,
+				 usb_sndctrlpipe(dev->udev, 0),
+				 ATUSB_CAN_STOP, ATUSB_TO_DEV, 0, 0,
+				 NULL, 0, 1000);
+	if (err < 0) {
+                dev_err(&dev->udev->dev,
+                        "%s: error sending stop control command = %d\n",
+                        __func__, err);
+        }
 
 	close_candev(netdev);
 
