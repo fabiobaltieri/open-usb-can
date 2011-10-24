@@ -37,9 +37,61 @@ MODULE_LICENSE("GPL v2");
 
 #define OPEN_USB_CAN_CAN_CLOCK	16000000
 
+#define EP0_SIZE		64
 #define RX_BUFFER_SIZE		64
 #define MAX_RX_URBS		8
 #define MAX_TX_URBS		8
+
+enum control_requests {
+/* system status/control grp
+ *
+ * ->host	ATUSB_ID		-		-	2
+ * ->host	ATUSB_BUILD		-		-	#bytes
+ * host->	ATUSB_RESET		-		-	0
+ */
+	ATUSB_ID			= 0x00,
+	ATUSB_BUILD,
+	ATUSB_RESET,
+
+/* debug/test group
+ *
+ * ->host	ATUSB_GPIO		dir+data	mask+p# 3
+ */
+	ATUSB_GPIO			= 0x10,
+
+/* transceiver group
+ *
+ * host->	ATUSB_REG_WRITE		value		addr	0
+ * ->host	ATUSB_REG_READ		-		addr	1
+ */
+	ATUSB_REG_WRITE			= 0x20,
+	ATUSB_REG_READ,
+
+/* SPI group
+ *
+ * host->	ATUSB_SPI_WRITE1	byte0		-	#bytes
+ * host->	ATUSB_SPI_WRITE2	byte0		byte1	#bytes
+ * ->host	ATUSB_SPI_READ1		byte0		-	#bytes
+ * ->host	ATUSB_SPI_READ2		byte0		byte1	#bytes
+ */
+	ATUSB_SPI_WRITE1		= 0x30,
+	ATUSB_SPI_WRITE2,
+	ATUSB_SPI_READ1,
+	ATUSB_SPI_READ2,
+
+/* CANBUS group
+ *
+ * host->	ATUSB_CAN_CONFIG	-		-	#bytes
+ * host->	ATUSB_CAN_START		-		-	0
+ * host->	ATUSB_CAN_STOP		-		-	0
+ */
+	ATUSB_CAN_CONFIG		= 0x40,
+	ATUSB_CAN_START,
+	ATUSB_CAN_STOP,
+};
+
+#define ATUSB_FROM_DEV (USB_TYPE_VENDOR | USB_DIR_IN)
+#define ATUSB_TO_DEV (USB_TYPE_VENDOR | USB_DIR_OUT)
 
 struct open_usb_can_frame {
 	canid_t can_id;  /* 32 bit CAN_ID + EFF/RTR/ERR flags */
@@ -88,6 +140,8 @@ struct open_usb_can {
 	struct usb_tx_urb_context tx_contexts[MAX_TX_URBS];
 
 	struct usb_anchor rx_submitted;
+
+	u8 version[2];
 };
 
 static void open_usb_can_read_bulk_callback(struct urb *urb)
@@ -217,19 +271,26 @@ static void open_usb_can_write_bulk_callback(struct urb *urb)
 static ssize_t show_version(struct device *d,
 			    struct device_attribute *attr, char *buf)
 {
-	/* struct usb_interface *intf = to_usb_interface(d); */
-	/* struct open_usb_can *dev = usb_get_intfdata(intf); */
+	struct usb_interface *intf = to_usb_interface(d);
+	struct open_usb_can *dev = usb_get_intfdata(intf);
+	int retval;
+	char build[EP0_SIZE];
 
-	/* TODO: control in version */
+	retval = usb_control_msg(dev->udev,
+				 usb_rcvctrlpipe(dev->udev, 0),
+				 ATUSB_BUILD, ATUSB_FROM_DEV, 0, 0,
+				 build, EP0_SIZE, 1000);
+	if (retval < 0) {
+                dev_err(&dev->udev->dev,
+                        "%s: error requesting build version = %d\n",
+                        __func__, retval);
+        }
+	build[retval] = '\0';
 
-	return sprintf(buf, "%d.%d.%d\n",
-		       0xf,
-		       0xf,
-		       0xff);
+	return sprintf(buf, "HW version: %d.%d\nBuild date: %s\n",
+		       dev->version[0], dev->version[1], build);
 }
 static DEVICE_ATTR(version, S_IRUGO, show_version, NULL);
-
-/* TODO: control function */
 
 static int open_usb_can_setup_rx_urbs(struct open_usb_can *dev)
 {
@@ -618,9 +679,19 @@ static int open_usb_can_probe(struct usb_interface *intf,
 
 	SET_NETDEV_DEV(netdev, &intf->dev);
 
+	err = usb_control_msg(dev->udev,
+			      usb_rcvctrlpipe(dev->udev, 0),
+			      ATUSB_ID, ATUSB_FROM_DEV, 0, 0,
+			      &dev->version[0], 2, 1000);
+	if (err < 0) {
+                dev_err(&dev->udev->dev,
+                        "%s: error requesting hardware version = %d\n",
+                        __func__, err);
+        }
+
 	if (device_create_file(&intf->dev, &dev_attr_version))
 		dev_err(&intf->dev,
-			"Couldn't create device file for firmware\n");
+			"Couldn't create device file for version\n");
 
 	err = register_candev(netdev);
 	if (err) {
@@ -632,7 +703,8 @@ static int open_usb_can_probe(struct usb_interface *intf,
 	}
 
 	dev_info(&netdev->dev,
-		"Open USB-CAN device probed\n");
+		 "Open USB-CAN device probed, hw version: %d.%d\n",
+		 dev->version[0], dev->version[1]);
 
 	return 0;
 
