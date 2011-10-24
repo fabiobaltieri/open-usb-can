@@ -17,6 +17,7 @@
 #  define CANCTRL_REQOP_NORMAL      0x00
 #  define CANCTRL_OSM               0x08
 #  define CANCTRL_ABAT              0x10
+#  define CANCTRL_CLKEN             0x04
 #define TEC           0x1c
 #define REC           0x1d
 #define CNF1          0x2a

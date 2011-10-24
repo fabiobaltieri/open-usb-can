@@ -151,11 +151,48 @@ uint8_t mcp2515_has_data (void)
 
 uint8_t mcp2515_start (void)
 {
+	uint8_t ctrl;
+	uint8_t cnf1, cnf2, cnf3;
+
+	ctrl = mcp2515_read_reg(CANCTRL) & ~CANCTRL_REQOP_MASK;
+
+	cnf1 = ((can_cfg.sjw - 1) << CNF1_SJW_SHIFT) | (can_cfg.brp - 1);
+
+	cnf2 = CNF2_BTLMODE |
+		(can_cfg.mode & CAN_CTRLMODE_3_SAMPLES ? CNF2_SAM : 0) |
+		((can_cfg.phase_seg1 - 1) << CNF2_PS1_SHIFT) |
+		(can_cfg.prop_seg - 1);
+
+	cnf3 = can_cfg.phase_seg2 - 1;
+
+	if (can_cfg.mode & CAN_CTRLMODE_LOOPBACK)
+		ctrl |= CANCTRL_REQOP_LOOPBACK;
+	else if (can_cfg.mode & CAN_CTRLMODE_LISTENONLY)
+		ctrl |= CANCTRL_REQOP_LISTEN_ONLY;
+	else
+		ctrl |= CANCTRL_REQOP_NORMAL;
+
+	mcp2515_write_reg(CNF1, cnf1);
+	mcp2515_write_reg(CNF2, cnf2);
+	mcp2515_write_reg(CNF3, cnf3);
+	mcp2515_write_reg(CANCTRL, ctrl);
+
 	return 0;
 }
 
 uint8_t mcp2515_stop (void)
 {
+	uint8_t ctrl;
+
+	ctrl = mcp2515_read_reg(CANCTRL) & ~CANCTRL_REQOP_MASK;
+
+	ctrl |= CANCTRL_REQOP_CONF;
+
+	mcp2515_write_reg(CANCTRL, ctrl);
+	mcp2515_write_reg(CNF1, 0x00);
+	mcp2515_write_reg(CNF2, 0x00);
+	mcp2515_write_reg(CNF3, 0x00);
+
 	return 0;
 }
 
@@ -166,7 +203,8 @@ void mcp2515_init (uint8_t clkpre)
 	_delay_ms(10);
 
 	mcp2515_write_reg(CANCTRL,
-			  CANCTRL_REQOP_CONF | 0x04 | (clkpre & 0x03));
+			  CANCTRL_REQOP_CONF |
+			  CANCTRL_CLKEN | (clkpre & 0x03));
 
 	_delay_ms(10);
 
