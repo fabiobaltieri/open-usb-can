@@ -10,6 +10,8 @@
 
 struct can_config can_cfg;
 
+static uint8_t ctrl;
+
 uint8_t mcp2515_read_reg (uint8_t addr)
 {
 	uint8_t ret;
@@ -151,10 +153,7 @@ uint8_t mcp2515_has_data (void)
 
 uint8_t mcp2515_start (void)
 {
-	uint8_t ctrl;
 	uint8_t cnf1, cnf2, cnf3;
-
-	ctrl = mcp2515_read_reg(CANCTRL) & ~CANCTRL_REQOP_MASK;
 
 	cnf1 = ((can_cfg.sjw - 1) << CNF1_SJW_SHIFT) | (can_cfg.brp - 1);
 
@@ -165,6 +164,7 @@ uint8_t mcp2515_start (void)
 
 	cnf3 = can_cfg.phase_seg2 - 1;
 
+	ctrl &= ~CANCTRL_REQOP_MASK;
 	if (can_cfg.mode & CAN_CTRLMODE_LOOPBACK)
 		ctrl |= CANCTRL_REQOP_LOOPBACK;
 	else if (can_cfg.mode & CAN_CTRLMODE_LISTENONLY)
@@ -182,10 +182,7 @@ uint8_t mcp2515_start (void)
 
 uint8_t mcp2515_stop (void)
 {
-	uint8_t ctrl;
-
-	ctrl = mcp2515_read_reg(CANCTRL) & ~CANCTRL_REQOP_MASK;
-
+	ctrl &= ~CANCTRL_REQOP_MASK;
 	ctrl |= CANCTRL_REQOP_CONF;
 
 	mcp2515_write_reg(CANCTRL, ctrl);
@@ -202,9 +199,9 @@ void mcp2515_init (uint8_t clkpre)
 
 	_delay_ms(10);
 
-	mcp2515_write_reg(CANCTRL,
-			  CANCTRL_REQOP_CONF |
-			  CANCTRL_CLKEN | (clkpre & 0x03));
+	ctrl = CANCTRL_REQOP_CONF | CANCTRL_CLKEN | (clkpre & 0x03);
+
+	mcp2515_write_reg(CANCTRL, ctrl);
 
 	_delay_ms(10);
 
