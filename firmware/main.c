@@ -29,6 +29,7 @@
 #include "can.h"
 #include "buffer.h"
 #include "mcp2515.h"
+#include "blink.h"
 
 void hello (void)
 {
@@ -54,6 +55,7 @@ int main(void)
 	board_init();
 	led_init();
 	spi_init();
+	blink_init();
 
 	_delay_ms(10);
 

@@ -10,6 +10,7 @@
 #include "buffer.h"
 #include "spi.h"
 #include "mcp2515.h"
+#include "blink.h"
 
 #include "defines.h"
 
@@ -62,7 +63,7 @@ void buffer_tx_process (void)
 
 		update_needed = 1;
 
-		led_a_toggle();
+		blink_tx();
 	}
 	sei();
 }
@@ -89,7 +90,7 @@ void buffer_rx_process (void)
 
 			(*offset)++;
 
-			led_b_toggle();
+			blink_rx();
 		}
 	}
 	sei();
