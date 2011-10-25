@@ -24,6 +24,7 @@
 #include "spi.h"
 #include "can.h"
 #include "mcp2515.h"
+#include "buffer.h"
 
 #include "defines.h"
 
@@ -156,6 +157,7 @@ static int my_setup(const struct setup_request *setup)
 		return 1;
 
 	case ATUSB_TO_DEV(ATUSB_CAN_START):
+		buffer_reset();
 		mcp2515_start();
 		return 1;
 

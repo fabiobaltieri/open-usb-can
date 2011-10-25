@@ -14,3 +14,4 @@ struct usb_rx_buffer {
 
 void buffer_tx_process (void);
 void buffer_rx_process (void);
+void buffer_reset (void);

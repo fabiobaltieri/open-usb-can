@@ -60,6 +60,7 @@ int main(void)
 	_delay_ms(10);
 
 	mcp2515_init(1);
+	buffer_reset();
 
 	usb_init();
 	ep0_init();
