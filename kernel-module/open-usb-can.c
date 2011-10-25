@@ -700,7 +700,7 @@ static int open_usb_can_probe(struct usb_interface *intf,
 	dev->netdev = netdev;
 
 	dev->can.state = CAN_STATE_STOPPED;
-	dev->can.clock.freq = OPEN_USB_CAN_CAN_CLOCK;
+	dev->can.clock.freq = OPEN_USB_CAN_CAN_CLOCK / 2;
 	dev->can.bittiming_const = &open_usb_can_bittiming_const;
 	dev->can.do_set_bittiming = open_usb_can_set_bittiming;
 	dev->can.do_set_mode = open_usb_can_set_mode;
