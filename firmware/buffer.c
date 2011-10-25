@@ -53,6 +53,7 @@ void buffer_tx_process (void)
 	buffer_tx_prepare();
 	sei();
 
+	cli();
 	if (tx_buf_count > 0 && mcp2515_txbuf_empty()) {
 		mcp2515_tx(&tx_buf[tx_buf_r]);
 
@@ -63,6 +64,7 @@ void buffer_tx_process (void)
 
 		led_a_toggle();
 	}
+	sei();
 }
 
 static void buffer_rx_done (void *user)
@@ -76,6 +78,7 @@ static void buffer_rx_done (void *user)
 
 void buffer_rx_process (void)
 {
+	cli();
 	if (mcp2515_has_data()) {
 		uint8_t *offset;
 
@@ -89,6 +92,7 @@ void buffer_rx_process (void)
 			led_b_toggle();
 		}
 	}
+	sei();
 
 	cli();
 	if (eps[2].state == EP_IDLE &&
