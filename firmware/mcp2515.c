@@ -165,6 +165,10 @@ uint8_t mcp2515_start (void)
 	cnf3 = can_cfg.phase_seg2 - 1;
 
 	ctrl &= ~CANCTRL_REQOP_MASK;
+
+	if (can_cfg.mode & CAN_CTRLMODE_ONE_SHOT)
+	  ctrl |= CANCTRL_OSM;
+
 	if (can_cfg.mode & CAN_CTRLMODE_LOOPBACK)
 		ctrl |= CANCTRL_REQOP_LOOPBACK;
 	else if (can_cfg.mode & CAN_CTRLMODE_LISTENONLY)
@@ -182,7 +186,7 @@ uint8_t mcp2515_start (void)
 
 uint8_t mcp2515_stop (void)
 {
-	ctrl &= ~CANCTRL_REQOP_MASK;
+	ctrl &= ~(CANCTRL_REQOP_MASK | CANCTRL_OSM);
 	ctrl |= CANCTRL_REQOP_CONF;
 
 	mcp2515_write_reg(CANCTRL, ctrl);

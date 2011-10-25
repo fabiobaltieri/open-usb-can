@@ -705,7 +705,8 @@ static int open_usb_can_probe(struct usb_interface *intf,
 	dev->can.do_set_bittiming = open_usb_can_set_bittiming;
 	dev->can.do_set_mode = open_usb_can_set_mode;
 	/* dev->can.do_get_berr_counter = open_usb_can_get_berr_counter; */
-	dev->can.ctrlmode_supported = CAN_CTRLMODE_3_SAMPLES |
+	dev->can.ctrlmode_supported =
+		CAN_CTRLMODE_ONE_SHOT | CAN_CTRLMODE_3_SAMPLES |
 		CAN_CTRLMODE_LISTENONLY | CAN_CTRLMODE_LOOPBACK;
 
 	netdev->netdev_ops = &open_usb_can_netdev_ops;

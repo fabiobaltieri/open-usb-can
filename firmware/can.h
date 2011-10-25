@@ -33,6 +33,7 @@ struct can_frame {
 #define CAN_CTRLMODE_LOOPBACK           0x01    /* Loopback mode */
 #define CAN_CTRLMODE_LISTENONLY         0x02    /* Listen-only mode */
 #define CAN_CTRLMODE_3_SAMPLES          0x04    /* Triple sampling mode */
+#define CAN_CTRLMODE_ONE_SHOT           0x08    /* One-Shot mode */
 struct can_config {
 	uint8_t mode;		/* Bus mode */
 	uint8_t prop_seg;	/* Propagation segment in TQs */
