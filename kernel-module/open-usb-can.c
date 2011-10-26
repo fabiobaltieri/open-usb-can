@@ -42,6 +42,8 @@ MODULE_LICENSE("GPL v2");
 #define MAX_RX_URBS		8
 #define MAX_TX_URBS		8
 
+#define INITIAL_BUFFER_LEVEL 32
+
 enum control_requests {
 /* system status/control grp
  *
@@ -152,6 +154,8 @@ struct open_usb_can {
 
 	struct usb_anchor rx_submitted;
 
+	atomic_t buffer_level;
+
 	u8 version[2];
 };
 
@@ -224,9 +228,9 @@ static void open_usb_can_read_bulk_callback(struct urb *urb)
 		stats->rx_bytes += frm->can_dlc;
 	}
 
-	if (msg->hdr.free_slots < 5)
-		netif_stop_queue(netdev);
-	else if (netif_queue_stopped(netdev))
+	atomic_set(&dev->buffer_level, msg->hdr.free_slots);
+
+	if (msg->hdr.free_slots > MAX_TX_URBS + 1 && netif_queue_stopped(netdev))
                 netif_wake_queue(netdev);
 
 resubmit_urb:
@@ -280,9 +284,6 @@ static void open_usb_can_write_bulk_callback(struct urb *urb)
 
         /* Release context */
         context->echo_index = MAX_TX_URBS;
-
-        if (netif_queue_stopped(netdev))
-		netif_wake_queue(netdev);
 }
 
 static ssize_t show_version(struct device *d,
@@ -519,8 +520,11 @@ static netdev_tx_t open_usb_can_start_xmit(struct sk_buff *skb,
 	atomic_inc(&dev->active_tx_jobs);
 
 	/* Slow down tx path */
-	if (atomic_read(&dev->active_tx_jobs) >= MAX_TX_URBS)
+	if (atomic_read(&dev->active_tx_jobs) >= MAX_TX_URBS ||
+	    atomic_read(&dev->buffer_level) < MAX_TX_URBS + 1)
 		netif_stop_queue(netdev);
+
+	atomic_dec(&dev->buffer_level);
 
 	err = usb_submit_urb(urb, GFP_ATOMIC);
 	if (unlikely(err)) {
@@ -732,6 +736,8 @@ static int open_usb_can_probe(struct usb_interface *intf,
 	usb_set_intfdata(intf, dev);
 
 	SET_NETDEV_DEV(netdev, &intf->dev);
+
+	atomic_set(&dev->buffer_level, INITIAL_BUFFER_LEVEL);
 
 	err = usb_control_msg(dev->udev,
 			      usb_rcvctrlpipe(dev->udev, 0),
