@@ -230,7 +230,7 @@ static void open_usb_can_read_bulk_callback(struct urb *urb)
 
 	atomic_set(&dev->buffer_level, msg->hdr.free_slots);
 
-	if (msg->hdr.free_slots > MAX_TX_URBS + 1 && netif_queue_stopped(netdev))
+	if (msg->hdr.free_slots > MAX_TX_URBS + 3 && netif_queue_stopped(netdev))
                 netif_wake_queue(netdev);
 
 resubmit_urb:
@@ -521,7 +521,7 @@ static netdev_tx_t open_usb_can_start_xmit(struct sk_buff *skb,
 
 	/* Slow down tx path */
 	if (atomic_read(&dev->active_tx_jobs) >= MAX_TX_URBS ||
-	    atomic_read(&dev->buffer_level) < MAX_TX_URBS + 1)
+	    atomic_read(&dev->buffer_level) < MAX_TX_URBS + 3)
 		netif_stop_queue(netdev);
 
 	atomic_dec(&dev->buffer_level);
