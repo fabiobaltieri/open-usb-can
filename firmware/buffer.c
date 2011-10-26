@@ -29,6 +29,7 @@ static void buffer_tx_prepare (void);
 
 static void buffer_tx_done (void *user)
 {
+	tx_buf_w = (tx_buf_w + 1) % TXBUFSZ;
 	tx_buf_count++;
 
 	update_needed = 1;
@@ -43,8 +44,6 @@ static void buffer_tx_prepare (void)
 		usb_recv(&eps[1], (uint8_t *)&tx_buf[tx_buf_w],
 			 sizeof(struct can_frame),
 			 buffer_tx_done, NULL);
-
-		tx_buf_w = (tx_buf_w + 1) % TXBUFSZ;
 	}
 }
 
