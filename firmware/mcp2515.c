@@ -212,6 +212,7 @@ uint8_t mcp2515_stop (void)
 	ctrl |= CANCTRL_REQOP_CONF;
 
 	mcp2515_write_reg(CANCTRL, ctrl);
+	mcp2515_write_reg(TXBCTRL(0), 0x00);
 	mcp2515_write_reg(CNF1, 0x00);
 	mcp2515_write_reg(CNF2, 0x00);
 	mcp2515_write_reg(CNF3, 0x00);
