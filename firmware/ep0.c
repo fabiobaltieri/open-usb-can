@@ -163,6 +163,7 @@ static int my_setup(const struct setup_request *setup)
 
 	case ATUSB_TO_DEV(ATUSB_CAN_STOP):
 		mcp2515_stop();
+		buffer_reset();
 		return 1;
 
 	default:
