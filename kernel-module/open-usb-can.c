@@ -189,6 +189,12 @@ static void open_usb_can_read_bulk_callback(struct urb *urb)
 
 	msg = (struct usb_rx_buffer *)urb->transfer_buffer;
 
+	dev_dbg(dev->udev->dev.parent,
+		 "RX frame: length=%d frame_count=%d free_slots=%d\n",
+		 urb->actual_length,
+		 msg->hdr.frame_count,
+		 msg->hdr.free_slots);
+
 	if (urb->actual_length < HDR_SIZE(msg->hdr.frame_count)) {
 		dev_info(dev->udev->dev.parent,
 			 "Malformed USB RX packet (frames=%d, length=%d), dropped.\n",
@@ -500,6 +506,8 @@ static netdev_tx_t open_usb_can_start_xmit(struct sk_buff *skb,
 	context->dev = dev;
 	context->echo_index = i;
 	context->dlc = cf->can_dlc;
+
+	dev_dbg(netdev->dev.parent, "TX frame: size=%d buffer_level=%d\n", size, atomic_read(&dev->buffer_level));
 
 	usb_fill_bulk_urb(urb, dev->udev, usb_sndbulkpipe(dev->udev, 1), buf,
 			  size, open_usb_can_write_bulk_callback, context);
