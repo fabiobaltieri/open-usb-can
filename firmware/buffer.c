@@ -116,8 +116,7 @@ void buffer_rx_process (void)
 
 void buffer_reset (void)
 {
-	tx_buf_w = 0;
-	tx_buf_r = 0;
+	tx_buf_r = tx_buf_w;
 	tx_buf_count = 0;
 
 	memset(rx_buf, 0, sizeof(rx_buf));
