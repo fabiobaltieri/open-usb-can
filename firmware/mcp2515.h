@@ -4,7 +4,18 @@
 #define INSTRUCTION_BIT_MODIFY  0x05
 #define INSTRUCTION_LOAD_TXB(n) (0x40 + 2 * (n))
 #define INSTRUCTION_READ_RXB(n) (((n) == 0) ? 0x90 : 0x94)
+#define INSTRUCTION_STATUS      0xA0
 #define INSTRUCTION_RESET       0xC0
+
+/* Read status values */
+#define STATUS_RX0IF       0x01
+#define STATUS_RX1IF       0x02
+#define STATUS_TX0REQ      0x04
+#define STATUS_TX0IF       0x08
+#define STATUS_TX1REQ      0x10
+#define STATUS_TX1IF       0x20
+#define STATUS_TX2REQ      0x40
+#define STATUS_TX2IF       0x80
 
 /* MPC251x registers */
 #define CANSTAT       0x0e
@@ -129,3 +140,6 @@ uint8_t mcp2515_tx (struct can_frame * frame);
 void mcp2515_rx (struct can_frame * frame);
 uint8_t mcp2515_has_data (void);
 uint8_t mcp2515_txbuf_empty (void);
+uint8_t mcp2515_txbuf_empty_buffered (void);
+uint8_t mcp2515_has_data_buffered (void);
+void mcp2515_update_status (void);

@@ -11,19 +11,20 @@
 struct can_config can_cfg;
 
 static uint8_t ctrl;
+static uint8_t status;
 
 uint8_t mcp2515_read_reg (uint8_t addr)
 {
 	uint8_t ret;
-  
+
 	can_cs_l();
-  
+
 	spi_io(INSTRUCTION_READ);
-  
+
 	spi_io(addr);
-  
+
 	ret = spi_io(0xff);
-  
+
 	can_cs_h();
 
 	return ret;
@@ -32,22 +33,33 @@ uint8_t mcp2515_read_reg (uint8_t addr)
 void mcp2515_write_reg (uint8_t addr, uint8_t data)
 {
 	can_cs_l();
-  
+
 	spi_io(INSTRUCTION_WRITE);
-  
+
 	spi_io(addr);
-  
+
 	spi_io(data);
-  
+
+	can_cs_h();
+}
+
+void mcp2515_update_status (void)
+{
+	can_cs_l();
+
+	spi_io(INSTRUCTION_STATUS);
+
+	status = spi_io(0xff);
+
 	can_cs_h();
 }
 
 static void mcp2515_reset (void)
 {
 	can_cs_l();
-  
+
 	spi_io(INSTRUCTION_RESET);
-  
+
 	can_cs_h();
 }
 
@@ -74,7 +86,7 @@ uint8_t mcp2515_tx (struct can_frame * frame)
 	rtr = (frame->can_id & CAN_RTR_FLAG) ? 1 : 0; /* Remote transmission */
 
 	can_cs_l();
-  
+
 	spi_io(INSTRUCTION_LOAD_TXB(0));
 	spi_io(sid >> SIDH_SHIFT); /* TXBnSIDH*/
 	spi_io(((sid & SIDL_SID_MASK) << SIDL_SID_SHIFT) |
@@ -103,7 +115,7 @@ void mcp2515_rx (struct can_frame * frame)
 
 	can_cs_l();
 	spi_io(INSTRUCTION_READ_RXB((ret & CANINTF_RX0IF) ? 0 : 1));
-  
+
 	buf = spi_io(0xff); /* RXBnSIDH */
 	frame->can_id = buf << RXBSIDH_SHIFT;
 	buf = spi_io(0xff); /* RXBnSIDL */
@@ -145,10 +157,20 @@ uint8_t mcp2515_txbuf_empty (void)
 uint8_t mcp2515_has_data (void)
 {
 	uint8_t ret;
-  
+
 	ret = mcp2515_read_reg(CANINTF);
-  
+
 	return (ret & (CANINTF_RX0IF | CANINTF_RX1IF));
+}
+
+uint8_t mcp2515_txbuf_empty_buffered (void)
+{
+	return !(status & STATUS_TX0REQ);
+}
+
+uint8_t mcp2515_has_data_buffered (void)
+{
+	return (status & (STATUS_RX0IF | STATUS_RX1IF));
 }
 
 uint8_t mcp2515_start (void)

@@ -76,6 +76,9 @@ int main(void)
 	hello();
 
 	while (1) {
+		cli();
+		mcp2515_update_status();
+		sei();
 		buffer_tx_process();
 		buffer_rx_process();
 
