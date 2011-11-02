@@ -177,7 +177,7 @@ uint8_t mcp2515_start (void)
 {
 	uint8_t cnf1, cnf2, cnf3;
 
-	cnf1 = ((can_cfg.sjw - 1) << CNF1_SJW_SHIFT) | (can_cfg.brp - 1);
+	cnf1 = ((can_cfg.sjw - 1) << CNF1_SJW_SHIFT) | (can_cfg.brp / 2 - 1);
 
 	cnf2 = CNF2_BTLMODE |
 		(can_cfg.mode & CAN_CTRLMODE_3_SAMPLES ? CNF2_SAM : 0) |
