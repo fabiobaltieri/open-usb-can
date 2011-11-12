@@ -12,6 +12,8 @@ struct can_config can_cfg;
 
 static uint8_t ctrl;
 static uint8_t status;
+static uint8_t tx_empty;
+static uint8_t error;
 
 uint8_t mcp2515_read_reg (uint8_t addr)
 {
@@ -53,12 +55,19 @@ void mcp2515_write_bits (uint8_t addr, uint8_t mask, uint8_t val)
 
 void mcp2515_update_status (void)
 {
-	can_cs_l();
+	status = mcp2515_read_reg(CANINTF);
 
-	spi_io(INSTRUCTION_STATUS);
-	status = spi_io(0xff);
+	status &= CANINTF_RX | CANINTF_TX | CANINTF_ERR;
 
-	can_cs_h();
+	if (status & CANINTF_ERR) {
+		error = mcp2515_read_reg(EFLG);
+		mcp2515_write_bits(EFLG, error, 0x00);
+	}
+
+	if (status & CANINTF_TX)
+		tx_empty = 1;
+
+	mcp2515_write_bits(CANINTF, status & (CANINTF_ERR | CANINTF_TX), 0x00);
 }
 
 static void mcp2515_reset (void)
@@ -76,13 +85,7 @@ uint8_t mcp2515_tx (struct can_frame * frame)
 	uint8_t rtr, exide;
 	uint8_t i;
 
-	i = 0;
-	while (mcp2515_read_reg(TXBCTRL(0)) & TXBCTRL_TXREQ) {
-		_delay_us(1);
-		if (i++ > 100) {
-			return -1;
-		}
-	}
+	tx_empty = 0;
 
 	exide = (frame->can_id & CAN_EFF_FLAG) ? 1 : 0; /* Extended ID Enable */
 	if (exide)
@@ -154,30 +157,17 @@ void mcp2515_rx (struct can_frame * frame)
 
 uint8_t mcp2515_txbuf_empty (void)
 {
-	uint8_t ret;
-
-	ret = mcp2515_read_reg(TXBCTRL(0));
-
-	return !(ret & TXBCTRL_TXREQ);
+	return tx_empty;
 }
 
 uint8_t mcp2515_has_data (void)
 {
-	uint8_t ret;
-
-	ret = mcp2515_read_reg(CANINTF);
-
-	return (ret & (CANINTF_RX0IF | CANINTF_RX1IF));
+	return (status & CANINTF_RX);
 }
 
-uint8_t mcp2515_txbuf_empty_buffered (void)
+uint8_t mcp2515_has_errors (void)
 {
-	return !(status & STATUS_TX0REQ);
-}
-
-uint8_t mcp2515_has_data_buffered (void)
-{
-	return (status & (STATUS_RX0IF | STATUS_RX1IF));
+	return (status & CANINTF_ERR);
 }
 
 uint8_t mcp2515_start (void)
@@ -209,6 +199,8 @@ uint8_t mcp2515_start (void)
 	mcp2515_write_reg(CNF2, cnf2);
 	mcp2515_write_reg(CNF3, cnf3);
 	mcp2515_write_reg(CANCTRL, ctrl);
+
+	tx_empty = 1;
 
 	return 0;
 }

@@ -59,6 +59,9 @@
 #  define CANINTF_TX0IF 0x04
 #  define CANINTF_RX1IF 0x02
 #  define CANINTF_RX0IF 0x01
+#  define CANINTF_RX (CANINTF_RX0IF | CANINTF_RX1IF)
+#  define CANINTF_TX (CANINTF_TX2IF | CANINTF_TX1IF | CANINTF_TX0IF)
+#  define CANINTF_ERR (CANINTF_ERRIF)
 #define EFLG          0x2d
 #  define EFLG_EWARN    0x01
 #  define EFLG_RXWAR    0x02
@@ -141,6 +144,5 @@ uint8_t mcp2515_tx (struct can_frame * frame);
 void mcp2515_rx (struct can_frame * frame);
 uint8_t mcp2515_has_data (void);
 uint8_t mcp2515_txbuf_empty (void);
-uint8_t mcp2515_txbuf_empty_buffered (void);
-uint8_t mcp2515_has_data_buffered (void);
+uint8_t mcp2515_has_errors (void);
 void mcp2515_update_status (void);

@@ -54,7 +54,7 @@ void buffer_tx_process (void)
 	sei();
 
 	cli();
-	if (tx_buf_count > 0 && mcp2515_txbuf_empty_buffered()) {
+	if (tx_buf_count > 0 && mcp2515_txbuf_empty()) {
 		mcp2515_tx(&tx_buf[tx_buf_r]);
 
 		tx_buf_r = (tx_buf_r + 1) % TXBUFSZ;
@@ -79,7 +79,7 @@ static void buffer_rx_done (void *user)
 void buffer_rx_process (void)
 {
 	cli();
-	if (mcp2515_has_data_buffered()) {
+	if (mcp2515_has_data()) {
 		uint8_t *offset;
 
 		offset = &rx_buf[rx_slot].hdr.frame_count;
