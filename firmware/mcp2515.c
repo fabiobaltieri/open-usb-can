@@ -157,7 +157,10 @@ void mcp2515_rx (struct can_frame * frame)
 
 uint8_t mcp2515_txbuf_empty (void)
 {
-	return tx_empty;
+	if (can_cfg.mode & CAN_CTRLMODE_ONE_SHOT)
+		return 1;
+	else
+		return tx_empty;
 }
 
 uint8_t mcp2515_has_data (void)
