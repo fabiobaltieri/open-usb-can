@@ -59,7 +59,14 @@ int main(void)
 
 	_delay_ms(10);
 
+#if (F_CPU == 16000000UL)
+	mcp2515_init(0);
+#elif (F_CPU == 8000000UL)
 	mcp2515_init(1);
+#else
+#error unsupported F_CPU value
+#endif
+
 	buffer_reset();
 
 	usb_init();

@@ -260,8 +260,16 @@ void usb_init(void)
 	USBCON |= 1 << FRZCLK;		/* freeze the clock */
 
 	/* enable the PLL and wait for it to lock */
-	PLLCSR &= ~(1 << PLLP2 | 1 << PLLP1 | 1 << PLLP0);
-	PLLCSR |= 1 << PLLE;
+#if (F_CPU == 16000000UL)
+	PLLCSR = ( (0 << PLLP2 | 0 << PLLP1) | (1 << PLLP0) |
+		   1 << PLLE );
+#elif (F_CPU == 8000000UL)
+	PLLCSR = ( (0 << PLLP2 | 0 << PLLP1) | (0 << PLLP0) |
+		   1 << PLLE );
+#else
+#error unsupported F_CPU value
+#endif
+
 	while (!(PLLCSR & (1 << PLOCK)));
 
 	USBCON &= ~(1 << USBE);		/* reset the controller */

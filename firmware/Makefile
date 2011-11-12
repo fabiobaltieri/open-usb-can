@@ -10,7 +10,7 @@ DFUPROGRAMMER = dfu-programmer
 DFU_UTIL = dfu-util
 
 MCU = atmega32u2
-F_CPU=8000000UL
+F_CPU = 8000000UL
 
 # Options
 CFLAGS	= -Os -Iusb -Wall -mmcu=$(MCU) -DF_CPU=$(F_CPU)

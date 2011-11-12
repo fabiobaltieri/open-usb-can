@@ -14,7 +14,7 @@ void blink_init (void)
 	TCCR0B = ( (0 << WGM02) |
 		   (1 << CS02) | (0 << CS01) | (1 << CS00) ); /* /1024 */
 
-	OCR0A = F_CPU / 1024 / 60; /* about 60Hz */
+	OCR0A = F_CPU / 1024 / 66; /* about 66Hz */
 }
 
 ISR(TIMER0_COMPA_vect)
