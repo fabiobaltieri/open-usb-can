@@ -133,6 +133,7 @@ extern struct can_config can_cfg;
 
 uint8_t mcp2515_read_reg (uint8_t addr);
 void mcp2515_write_reg (uint8_t addr, uint8_t data);
+void mcp2515_write_bits (uint8_t addr, uint8_t mask, uint8_t val);
 uint8_t mcp2515_start (void);
 uint8_t mcp2515_stop (void);
 void mcp2515_init (uint8_t clkpre);

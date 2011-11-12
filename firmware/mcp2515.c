@@ -20,9 +20,7 @@ uint8_t mcp2515_read_reg (uint8_t addr)
 	can_cs_l();
 
 	spi_io(INSTRUCTION_READ);
-
 	spi_io(addr);
-
 	ret = spi_io(0xff);
 
 	can_cs_h();
@@ -35,10 +33,20 @@ void mcp2515_write_reg (uint8_t addr, uint8_t data)
 	can_cs_l();
 
 	spi_io(INSTRUCTION_WRITE);
-
 	spi_io(addr);
-
 	spi_io(data);
+
+	can_cs_h();
+}
+
+void mcp2515_write_bits (uint8_t addr, uint8_t mask, uint8_t val)
+{
+	can_cs_l();
+
+	spi_io(INSTRUCTION_BIT_MODIFY);
+	spi_io(addr);
+	spi_io(mask);
+	spi_io(val);
 
 	can_cs_h();
 }
@@ -48,7 +56,6 @@ void mcp2515_update_status (void)
 	can_cs_l();
 
 	spi_io(INSTRUCTION_STATUS);
-
 	status = spi_io(0xff);
 
 	can_cs_h();
