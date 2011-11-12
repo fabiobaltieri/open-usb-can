@@ -94,6 +94,18 @@ void buffer_rx_process (void)
 	}
 	sei();
 
+	if (mcp2515_has_errors()) {
+		uint8_t *offset;
+
+		offset = &rx_buf[rx_slot].hdr.frame_count;
+
+		if (*offset < RX_MAX_FRAMES) {
+			mcp2515_err(&rx_buf[rx_slot].frames[*offset]);
+
+			(*offset)++;
+		}
+	}
+
 	cli();
 	if (eps[2].state == EP_IDLE &&
 	    (update_needed || rx_buf[rx_slot].hdr.frame_count > 0)) {

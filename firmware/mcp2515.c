@@ -7,6 +7,7 @@
 #include "can.h"
 #include "spi.h"
 #include "mcp2515.h"
+#include "error.h"
 
 struct can_config can_cfg;
 
@@ -153,6 +154,34 @@ void mcp2515_rx (struct can_frame * frame)
 		frame->data[i] = spi_io(0xff); /* RXBnDn */
 
 	can_cs_h();
+}
+
+void mcp2515_err (struct can_frame * frame)
+{
+	frame->can_id = CAN_ERR_FLAG;
+	frame->can_dlc = CAN_ERR_DLC;
+	memset(&frame->data[0], 0, frame->can_dlc);
+
+	if (error & EFLG_TXBO) {
+		frame->can_id |= CAN_ERR_BUSOFF;
+	} else if (error & EFLG_TXEP) {
+		frame->can_id |= CAN_ERR_CRTL;
+		frame->data[1] |= CAN_ERR_CRTL_TX_PASSIVE;
+	} else if (error & EFLG_RXEP) {
+		frame->can_id |= CAN_ERR_CRTL;
+		frame->data[1] |= CAN_ERR_CRTL_RX_PASSIVE;
+	} else if (error & EFLG_TXWAR) {
+		frame->can_id |= CAN_ERR_CRTL;
+		frame->data[1] |= CAN_ERR_CRTL_TX_WARNING;
+	} else if (error & EFLG_RXWAR) {
+		frame->can_id |= CAN_ERR_CRTL;
+		frame->data[1] |= CAN_ERR_CRTL_RX_WARNING;
+	}
+
+	if (error & (EFLG_RX0OVR | EFLG_RX1OVR)) {
+		frame->can_id |= CAN_ERR_CRTL;
+		frame->data[1] |= CAN_ERR_CRTL_RX_OVERFLOW;
+	}
 }
 
 uint8_t mcp2515_txbuf_empty (void)
