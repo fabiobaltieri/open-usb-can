@@ -1,13 +1,14 @@
 /*
- * fw/usb/usb.c - USB hardware setup and standard device requests
+ * Copyright 2011 Fabio Baltieri <fabio.baltieri@gmail.com>
  *
- * Written 2008-2011 by Werner Almesberger
- * Copyright 2008-2011 Werner Almesberger
+ * Based on the original ben-wpan code written by
+ *   Werner Almesberger, Copyright 2008-2011
  *
- * This program is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
+ *
  */
 
 /*

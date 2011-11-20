@@ -1,3 +1,16 @@
+/*
+ * Copyright 2011 Fabio Baltieri <fabio.baltieri@gmail.com>
+ *
+ * Contains code from the original Linux mcp251x.c driver by
+ *   Christian Pellegrin, Copyright 2009 EVOL S.r.l.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ */
+
 /* SPI interface instruction set */
 #define INSTRUCTION_WRITE       0x02
 #define INSTRUCTION_READ        0x03
