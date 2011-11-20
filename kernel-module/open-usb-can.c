@@ -1,7 +1,13 @@
 /*
- * CAN driver for esd CAN-USB/2
+ * Linux socketcan driver for Open-USB-CAN by Fabio Baltieri
  *
- * Copyright (C) 2010 Matthias Fuchs <matthias.fuchs@esd.eu>, esd gmbh
+ * Copyright 2011 Fabio Baltieri <fabio.baltieri@gmail.com>
+ *
+ * Based on the original ems_usb driver
+ *   Copyright (C) 2004-2009 EMS Dr. Thomas Wuensche
+ *
+ * Based on the original esd_usb2 driver
+ *   Copyright (C) 2010 Matthias Fuchs <matthias.fuchs@esd.eu>, esd gmbh
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published
