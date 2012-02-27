@@ -107,8 +107,13 @@ enum ep_state {
 	EP_STALL,
 };
 
+enum ep_flags {
+	EPF_TRUNCATE = 0x01,
+};
+
 struct ep_descr {
 	enum ep_state state;
+	enum ep_flags flags;
 	uint8_t *buf;
 	uint8_t *end;
 	uint8_t size;

@@ -122,7 +122,7 @@ static void ep_tx(struct ep_descr *ep)
 		size = ep->size;
 	for (left = size; left; left--)
 		UEDATX = *ep->buf++;
-	if (size == ep->size)
+	if (!(ep->flags & EPF_TRUNCATE) && size == ep->size)
 		return;
 	ep->state = EP_IDLE;
 }
@@ -190,6 +190,7 @@ static void ep_init(void)
 	    (1 << RXSTPE) | (1 << RXOUTE) | (1 << STALLEDE) | (1 << TXINE);
 
 	eps[0].state = EP_IDLE;
+	eps[0].flags = 0;
 	eps[0].size = EP0_SIZE;
 
 	/* EP1 */
@@ -204,6 +205,7 @@ static void ep_init(void)
 	UEIENX = (1 << RXOUTE) | (1 << STALLEDE);
 
 	eps[1].state = EP_IDLE;
+	eps[1].flags = 0;
 	eps[1].size = EP1_SIZE;
 
 	/* EP2 */
@@ -218,6 +220,7 @@ static void ep_init(void)
 	UEIENX = (1 << STALLEDE) | (1 << TXINE);
 
 	eps[2].state = EP_IDLE;
+	eps[2].flags = 0;
 	eps[2].size = EP2_SIZE;
 }
 
