@@ -131,7 +131,6 @@ static void ep_tx(struct ep_descr *ep)
 static void handle_ep(int n)
 {
 	struct ep_descr *ep = eps+n;
-	uint8_t mask;
 
 	UENUM = n;
 	if (UEINTX & (1 << RXSTPI)) {
@@ -158,10 +157,9 @@ static void handle_ep(int n)
 		/* @@ EP_RX: cancel (?) */
 		if (ep->state == EP_TX) {
 			ep_tx(ep);
-			mask = 1 << TXINI;
+			UEINTX &= ~(1 << TXINI);
 			if (n)
-				mask |= 1 << FIFOCON;
-			UEINTX = ~mask;
+				UEINTX &= ~(1 << FIFOCON);
 			if (ep->state == EP_IDLE && ep->callback)
 				ep->callback(ep->user);
 		} else {
