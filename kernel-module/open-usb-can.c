@@ -805,27 +805,4 @@ static struct usb_driver open_usb_can_driver = {
 	.id_table = open_usb_can_table,
 };
 
-static int __init open_usb_can_init(void)
-{
-	int err;
-
-        printk(KERN_INFO "Open USB-CAN kernel driver loaded\n");
-
-	/* register this driver with the USB subsystem */
-	err = usb_register(&open_usb_can_driver);
-
-	if (err) {
-		err("usb_register failed. Error number %d\n", err);
-		return err;
-	}
-
-	return 0;
-}
-module_init(open_usb_can_init);
-
-static void __exit open_usb_can_exit(void)
-{
-	/* deregister this driver with the USB subsystem */
-	usb_deregister(&open_usb_can_driver);
-}
-module_exit(open_usb_can_exit);
+module_usb_driver(open_usb_can_driver);
