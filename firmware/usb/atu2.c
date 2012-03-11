@@ -205,7 +205,7 @@ static void ep_init(void)
 	UEIENX = (1 << RXOUTE) | (1 << STALLEDE);
 
 	eps[1].state = EP_IDLE;
-	eps[1].flags = 0;
+	eps[1].flags = EPF_TRUNCATE;
 	eps[1].size = EP1_SIZE;
 
 	/* EP2 */
@@ -220,7 +220,7 @@ static void ep_init(void)
 	UEIENX = (1 << STALLEDE) | (1 << TXINE);
 
 	eps[2].state = EP_IDLE;
-	eps[2].flags = 0;
+	eps[2].flags = EPF_TRUNCATE;
 	eps[2].size = EP2_SIZE;
 }
 
