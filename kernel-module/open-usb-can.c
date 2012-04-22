@@ -104,12 +104,12 @@ enum control_requests {
 #define ATUSB_TO_DEV (USB_TYPE_VENDOR | USB_DIR_OUT)
 
 struct open_usb_can_config {
-        uint8_t mode;           /* Bus mode */
-        uint8_t prop_seg;       /* Propagation segment in TQs */
-        uint8_t phase_seg1;     /* Phase buffer segment 1 in TQs */
-        uint8_t phase_seg2;     /* Phase buffer segment 2 in TQs */
-        uint8_t sjw;            /* Synchronisation jump width in TQs */
-        uint8_t brp;            /* Bit-rate prescaler */
+	uint8_t mode;           /* Bus mode */
+	uint8_t prop_seg;       /* Propagation segment in TQs */
+	uint8_t phase_seg1;     /* Phase buffer segment 1 in TQs */
+	uint8_t phase_seg2;     /* Phase buffer segment 2 in TQs */
+	uint8_t sjw;            /* Synchronisation jump width in TQs */
+	uint8_t brp;            /* Bit-rate prescaler */
 } __packed;
 
 struct open_usb_can_frame {
@@ -168,17 +168,17 @@ struct open_usb_can {
 static void open_usb_can_read_bulk_callback(struct urb *urb)
 {
 	struct open_usb_can *dev = urb->context;
-        struct net_device *netdev = dev->netdev;
+	struct net_device *netdev = dev->netdev;
 	int retval;
 	int i, j;
 
-        struct can_frame *cf;
-        struct usb_rx_buffer *msg;
-        struct sk_buff *skb;
-        struct net_device_stats *stats = &dev->netdev->stats;
+	struct can_frame *cf;
+	struct usb_rx_buffer *msg;
+	struct sk_buff *skb;
+	struct net_device_stats *stats = &dev->netdev->stats;
 
-        if (!netif_device_present(netdev))
-                return;
+	if (!netif_device_present(netdev))
+		return;
 
 	switch (urb->status) {
 	case 0: /* success */
@@ -237,7 +237,7 @@ static void open_usb_can_read_bulk_callback(struct urb *urb)
 	atomic_set(&dev->buffer_level, msg->hdr.free_slots);
 
 	if (msg->hdr.free_slots > MAX_TX_URBS + 3 && netif_queue_stopped(netdev))
-                netif_wake_queue(netdev);
+		netif_wake_queue(netdev);
 
 resubmit_urb:
 	usb_fill_bulk_urb(urb, dev->udev, usb_rcvbulkpipe(dev->udev, 2),
@@ -283,13 +283,13 @@ static void open_usb_can_write_bulk_callback(struct urb *urb)
 	netdev->trans_start = jiffies;
 
 	/* transmission complete interrupt */
-        netdev->stats.tx_packets++;
-        netdev->stats.tx_bytes += context->dlc;
+	netdev->stats.tx_packets++;
+	netdev->stats.tx_bytes += context->dlc;
 
-        can_get_echo_skb(netdev, context->echo_index);
+	can_get_echo_skb(netdev, context->echo_index);
 
-        /* Release context */
-        context->echo_index = MAX_TX_URBS;
+	/* Release context */
+	context->echo_index = MAX_TX_URBS;
 }
 
 static ssize_t show_version(struct device *d,
@@ -305,14 +305,14 @@ static ssize_t show_version(struct device *d,
 				 ATUSB_BUILD, ATUSB_FROM_DEV, 0, 0,
 				 build, EP0_SIZE, 1000);
 	if (retval < 0) {
-                dev_err(&dev->udev->dev,
-                        "%s: error requesting build version = %d\n",
-                        __func__, retval);
-        }
+		dev_err(&dev->udev->dev,
+			"%s: error requesting build version = %d\n",
+			__func__, retval);
+	}
 	build[retval] = '\0';
 
 	return sprintf(buf, "HW version: %d.%d\nBuild date: %s\n",
-		       dev->version[0], dev->version[1], build);
+			dev->version[0], dev->version[1], build);
 }
 static DEVICE_ATTR(version, S_IRUGO, show_version, NULL);
 
@@ -394,10 +394,10 @@ static int open_usb_can_start(struct open_usb_can *dev)
 				 ATUSB_CAN_START, ATUSB_TO_DEV, 0, 0,
 				 NULL, 0, 1000);
 	if (err < 0) {
-                dev_err(&dev->udev->dev,
-                        "%s: error sending start control command = %d\n",
-                        __func__, err);
-        }
+		dev_err(&dev->udev->dev,
+			"%s: error sending start control command = %d\n",
+			__func__, err);
+	}
 
 	dev->can.state = CAN_STATE_ERROR_ACTIVE;
 
@@ -438,8 +438,8 @@ static int open_usb_can_open(struct net_device *netdev)
 	/* finally start device */
 	err = open_usb_can_start(dev);
 	if (err) {
-                if (err == -ENODEV)
-                        netif_device_detach(dev->netdev);
+		if (err == -ENODEV)
+			netif_device_detach(dev->netdev);
 
 		dev_warn(netdev->dev.parent,
 			 "couldn't start device: %d\n", err);
@@ -586,10 +586,10 @@ static int open_usb_can_close(struct net_device *netdev)
 				 ATUSB_CAN_STOP, ATUSB_TO_DEV, 0, 0,
 				 NULL, 0, 1000);
 	if (err < 0) {
-                dev_err(&dev->udev->dev,
-                        "%s: error sending stop control command = %d\n",
-                        __func__, err);
-        }
+		dev_err(&dev->udev->dev,
+			"%s: error sending stop control command = %d\n",
+			__func__, err);
+	}
 
 	close_candev(netdev);
 
@@ -606,14 +606,14 @@ static const struct net_device_ops open_usb_can_netdev_ops = {
 
 static struct can_bittiming_const open_usb_can_bittiming_const = {
 	.name = "open_usb_can",
-        .tseg1_min = 3,
-        .tseg1_max = 16,
-        .tseg2_min = 2,
-        .tseg2_max = 8,
-        .sjw_max = 4,
-        .brp_min = 1,
-        .brp_max = 64,
-        .brp_inc = 1,
+	.tseg1_min = 3,
+	.tseg1_max = 16,
+	.tseg2_min = 2,
+	.tseg2_max = 8,
+	.sjw_max = 4,
+	.brp_min = 1,
+	.brp_max = 64,
+	.brp_inc = 1,
 };
 
 static int open_usb_can_set_bittiming(struct net_device *netdev)
@@ -645,10 +645,10 @@ static int open_usb_can_set_bittiming(struct net_device *netdev)
 				 ATUSB_CAN_PUT_CONFIG, ATUSB_TO_DEV, 0, 0,
 				 &cfg, sizeof(cfg), 1000);
 	if (retval < 0) {
-                dev_err(&dev->udev->dev,
-                        "%s: error sending bus configuration = %d\n",
-                        __func__, retval);
-        }
+		dev_err(&dev->udev->dev,
+			"%s: error sending bus configuration = %d\n",
+			__func__, retval);
+	}
 
 	return 0;
 }
@@ -693,17 +693,17 @@ static int open_usb_can_probe(struct usb_interface *intf,
 	struct open_usb_can *dev;
 	int i, err;
 
-        /*
-         * Ignore all interfaces used for DFU, i.e., everything while in the
-         * boot loader, and interface #1 when in the application.
-         */
-        if (intf->cur_altsetting->desc.bInterfaceClass !=
-            USB_CLASS_VENDOR_SPEC) {
-                dev_dbg(&intf->dev,
-                        "Ignoring interface with class 0x%02x\n",
-                        intf->cur_altsetting->desc.bInterfaceClass);
-                return -ENODEV;
-        }
+	/*
+	 * Ignore all interfaces used for DFU, i.e., everything while in the
+	 * boot loader, and interface #1 when in the application.
+	 */
+	if (intf->cur_altsetting->desc.bInterfaceClass !=
+	    USB_CLASS_VENDOR_SPEC) {
+		dev_dbg(&intf->dev,
+			"Ignoring interface with class 0x%02x\n",
+			intf->cur_altsetting->desc.bInterfaceClass);
+		return -ENODEV;
+	}
 
 	netdev = alloc_candev(sizeof(struct open_usb_can), MAX_TX_URBS);
 	if (!netdev) {
@@ -750,10 +750,10 @@ static int open_usb_can_probe(struct usb_interface *intf,
 			      ATUSB_ID, ATUSB_FROM_DEV, 0, 0,
 			      &dev->version[0], 2, 1000);
 	if (err < 0) {
-                dev_err(&dev->udev->dev,
-                        "%s: error requesting hardware version = %d\n",
-                        __func__, err);
-        }
+		dev_err(&dev->udev->dev,
+			"%s: error requesting hardware version = %d\n",
+			__func__, err);
+	}
 
 	if (device_create_file(&intf->dev, &dev_attr_version))
 		dev_err(&intf->dev,
