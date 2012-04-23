@@ -61,32 +61,6 @@ enum control_requests {
 	ATUSB_BUILD,
 	ATUSB_RESET,
 
-/* debug/test group
- *
- * ->host	ATUSB_GPIO		dir+data	mask+p# 3
- */
-	ATUSB_GPIO			= 0x10,
-
-/* transceiver group
- *
- * host->	ATUSB_REG_WRITE		value		addr	0
- * ->host	ATUSB_REG_READ		-		addr	1
- */
-	ATUSB_REG_WRITE			= 0x20,
-	ATUSB_REG_READ,
-
-/* SPI group
- *
- * host->	ATUSB_SPI_WRITE1	byte0		-	#bytes
- * host->	ATUSB_SPI_WRITE2	byte0		byte1	#bytes
- * ->host	ATUSB_SPI_READ1		byte0		-	#bytes
- * ->host	ATUSB_SPI_READ2		byte0		byte1	#bytes
- */
-	ATUSB_SPI_WRITE1		= 0x30,
-	ATUSB_SPI_WRITE2,
-	ATUSB_SPI_READ1,
-	ATUSB_SPI_READ2,
-
 /* CANBUS group
  *
  * host->	ATUSB_CAN_PUT_CONFIG	-		-	#bytes
