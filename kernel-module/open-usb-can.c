@@ -199,7 +199,7 @@ static void open_usb_can_read_bulk_callback(struct urb *urb)
 
 	msg = (struct usb_rx_buffer *)urb->transfer_buffer;
 
-	dev_dbg(dev->udev->dev.parent,
+	netdev_dbg(netdev,
 		 "RX frame: length=%d frame_count=%d free_slots=%d\n",
 		 urb->actual_length,
 		 msg->hdr.frame_count,
@@ -218,8 +218,7 @@ static void open_usb_can_read_bulk_callback(struct urb *urb)
 
 		skb = alloc_can_skb(dev->netdev, &cf);
 		if (skb == NULL) {
-			dev_err(dev->udev->dev.parent,
-				"alloc_can_skb failed\n");
+			netdev_err(netdev, "alloc_can_skb failed\n");
 			goto resubmit_urb;
 		}
 
@@ -277,8 +276,8 @@ static void open_usb_can_write_bulk_callback(struct urb *urb)
 		return;
 
 	if (urb->status)
-		dev_info(netdev->dev.parent, "Tx URB aborted (%d)\n",
-			 urb->status);
+		dev_info(dev->udev->dev.parent,
+			 "Tx URB aborted (%d)\n", urb->status);
 
 	netdev->trans_start = jiffies;
 
@@ -394,7 +393,7 @@ static int open_usb_can_start(struct open_usb_can *dev)
 				 ATUSB_CAN_START, ATUSB_TO_DEV, 0, 0,
 				 NULL, 0, 1000);
 	if (err < 0) {
-		dev_err(&dev->udev->dev,
+		dev_err(dev->udev->dev.parent,
 			"%s: error sending start control command = %d\n",
 			__func__, err);
 	}
@@ -407,7 +406,7 @@ failed:
 	if (err == -ENODEV)
 		netif_device_detach(netdev);
 
-	dev_err(netdev->dev.parent, "couldn't start device: %d\n", err);
+	netdev_err(netdev, "couldn't start device: %d\n", err);
 
 	return err;
 }
@@ -441,8 +440,7 @@ static int open_usb_can_open(struct net_device *netdev)
 		if (err == -ENODEV)
 			netif_device_detach(dev->netdev);
 
-		dev_warn(netdev->dev.parent,
-			 "couldn't start device: %d\n", err);
+		netdev_warn(netdev, "couldn't start device: %d\n", err);
 
 		close_candev(netdev);
 
@@ -476,14 +474,15 @@ static netdev_tx_t open_usb_can_start_xmit(struct sk_buff *skb,
 	/* create a URB, and a buffer for it, and copy the data to the URB */
 	urb = usb_alloc_urb(0, GFP_ATOMIC);
 	if (!urb) {
-		dev_err(netdev->dev.parent, "No memory left for URBs\n");
+		dev_err(dev->udev->dev.parent, "No memory left for URBs\n");
 		goto nourbmem;
 	}
 
 	buf = usb_alloc_coherent(dev->udev, size, GFP_ATOMIC,
 				 &urb->transfer_dma);
 	if (!buf) {
-		dev_err(netdev->dev.parent, "No memory left for USB buffer\n");
+		dev_err(dev->udev->dev.parent,
+			"No memory left for USB buffer\n");
 		goto nobufmem;
 	}
 
@@ -505,7 +504,8 @@ static netdev_tx_t open_usb_can_start_xmit(struct sk_buff *skb,
 	 * This may never happen.
 	 */
 	if (!context) {
-		dev_warn(netdev->dev.parent, "couldn't find free context\n");
+		dev_warn(dev->udev->dev.parent,
+			 "couldn't find free context\n");
 		ret = NETDEV_TX_BUSY;
 		goto releasebuf;
 	}
@@ -514,7 +514,8 @@ static netdev_tx_t open_usb_can_start_xmit(struct sk_buff *skb,
 	context->echo_index = i;
 	context->dlc = cf->can_dlc;
 
-	dev_dbg(netdev->dev.parent, "TX frame: size=%d buffer_level=%d\n", size, atomic_read(&dev->buffer_level));
+	netdev_dbg(netdev, "TX frame: size=%d buffer_level=%d\n",
+		   size, atomic_read(&dev->buffer_level));
 
 	usb_fill_bulk_urb(urb, dev->udev, usb_sndbulkpipe(dev->udev, 1), buf,
 			  size, open_usb_can_write_bulk_callback, context);
@@ -544,7 +545,8 @@ static netdev_tx_t open_usb_can_start_xmit(struct sk_buff *skb,
 		if (err == -ENODEV)
 			netif_device_detach(netdev);
 		else
-			dev_warn(netdev->dev.parent, "failed tx_urb %d\n", err);
+			dev_warn(dev->udev->dev.parent,
+				 "failed tx_urb %d\n", err);
 
 		goto releasebuf;
 	}
@@ -586,7 +588,7 @@ static int open_usb_can_close(struct net_device *netdev)
 				 ATUSB_CAN_STOP, ATUSB_TO_DEV, 0, 0,
 				 NULL, 0, 1000);
 	if (err < 0) {
-		dev_err(&dev->udev->dev,
+		dev_err(dev->udev->dev.parent,
 			"%s: error sending stop control command = %d\n",
 			__func__, err);
 	}
@@ -623,7 +625,7 @@ static int open_usb_can_set_bittiming(struct net_device *netdev)
 	struct open_usb_can_config cfg;
 	int retval;
 
-	dev_info(netdev->dev.parent, "setting timing for %d bps = %d %d %d %d %d %d\n",
+	netdev_info(netdev, "setting timing for %d bps = %d %d %d %d %d %d\n",
 		 bt->bitrate,
 		 dev->can.ctrlmode,
 		 bt->prop_seg,
@@ -645,7 +647,7 @@ static int open_usb_can_set_bittiming(struct net_device *netdev)
 				 ATUSB_CAN_PUT_CONFIG, ATUSB_TO_DEV, 0, 0,
 				 &cfg, sizeof(cfg), 1000);
 	if (retval < 0) {
-		dev_err(&dev->udev->dev,
+		dev_err(dev->udev->dev.parent,
 			"%s: error sending bus configuration = %d\n",
 			__func__, retval);
 	}
@@ -768,7 +770,7 @@ static int open_usb_can_probe(struct usb_interface *intf,
 		goto done;
 	}
 
-	dev_info(&netdev->dev,
+	netdev_info(netdev,
 		 "Open USB-CAN device probed, hw version: %d.%d\n",
 		 dev->version[0], dev->version[1]);
 
