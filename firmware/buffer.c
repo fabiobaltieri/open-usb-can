@@ -35,9 +35,9 @@ static volatile uint8_t rx_slot;
 
 static volatile uint8_t update_needed;
 
-static void buffer_tx_prepare (void);
+static void buffer_tx_prepare(void);
 
-static void buffer_tx_done (void *user)
+static void buffer_tx_done(void *user)
 {
 	tx_buf_w = (tx_buf_w + 1) % TXBUFSZ;
 	tx_buf_count++;
@@ -48,7 +48,7 @@ static void buffer_tx_done (void *user)
 	buffer_tx_prepare();
 }
 
-static void buffer_tx_prepare (void)
+static void buffer_tx_prepare(void)
 {
 	if (tx_buf_count < TXBUFSZ && eps[1].state == EP_IDLE) {
 		usb_recv(&eps[1], (uint8_t *)&tx_buf[tx_buf_w],
@@ -57,7 +57,7 @@ static void buffer_tx_prepare (void)
 	}
 }
 
-void buffer_tx_process (void)
+void buffer_tx_process(void)
 {
 	cli();
 	buffer_tx_prepare();
@@ -77,7 +77,7 @@ void buffer_tx_process (void)
 	sei();
 }
 
-static void buffer_rx_done (void *user)
+static void buffer_rx_done(void *user)
 {
 	struct usb_rx_buffer *rxb;
 
@@ -86,7 +86,7 @@ static void buffer_rx_done (void *user)
 	memset(rxb, 0, sizeof(struct usb_rx_buffer));
 }
 
-void buffer_rx_process (void)
+void buffer_rx_process(void)
 {
 	cli();
 	if (mcp2515_has_data()) {
@@ -136,7 +136,7 @@ void buffer_rx_process (void)
 	sei();
 }
 
-void buffer_reset (void)
+void buffer_reset(void)
 {
 	tx_buf_r = tx_buf_w;
 	tx_buf_count = 0;

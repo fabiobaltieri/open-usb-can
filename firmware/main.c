@@ -31,7 +31,7 @@
 #include "mcp2515.h"
 #include "blink.h"
 
-void hello (void)
+void hello(void)
 {
 	uint8_t i;
 

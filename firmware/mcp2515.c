@@ -29,7 +29,7 @@ static uint8_t status;
 static uint8_t tx_empty;
 static uint8_t error;
 
-uint8_t mcp2515_read_reg (uint8_t addr)
+uint8_t mcp2515_read_reg(uint8_t addr)
 {
 	uint8_t ret;
 
@@ -44,7 +44,7 @@ uint8_t mcp2515_read_reg (uint8_t addr)
 	return ret;
 }
 
-void mcp2515_write_reg (uint8_t addr, uint8_t data)
+void mcp2515_write_reg(uint8_t addr, uint8_t data)
 {
 	can_cs_l();
 
@@ -55,7 +55,7 @@ void mcp2515_write_reg (uint8_t addr, uint8_t data)
 	can_cs_h();
 }
 
-void mcp2515_write_bits (uint8_t addr, uint8_t mask, uint8_t val)
+void mcp2515_write_bits(uint8_t addr, uint8_t mask, uint8_t val)
 {
 	can_cs_l();
 
@@ -67,7 +67,7 @@ void mcp2515_write_bits (uint8_t addr, uint8_t mask, uint8_t val)
 	can_cs_h();
 }
 
-void mcp2515_update_status (void)
+void mcp2515_update_status(void)
 {
 	status = mcp2515_read_reg(CANINTF);
 
@@ -84,7 +84,7 @@ void mcp2515_update_status (void)
 	mcp2515_write_bits(CANINTF, status & (CANINTF_ERR | CANINTF_TX), 0x00);
 }
 
-static void mcp2515_reset (void)
+static void mcp2515_reset(void)
 {
 	can_cs_l();
 
@@ -93,7 +93,7 @@ static void mcp2515_reset (void)
 	can_cs_h();
 }
 
-uint8_t mcp2515_tx (struct can_frame * frame)
+uint8_t mcp2515_tx(struct can_frame * frame)
 {
 	uint32_t eid, sid;
 	uint8_t rtr, exide;
@@ -129,7 +129,7 @@ uint8_t mcp2515_tx (struct can_frame * frame)
 	return 0;
 }
 
-void mcp2515_rx (struct can_frame * frame)
+void mcp2515_rx(struct can_frame * frame)
 {
 	uint8_t ret;
 	uint8_t buf;
@@ -169,7 +169,7 @@ void mcp2515_rx (struct can_frame * frame)
 	can_cs_h();
 }
 
-void mcp2515_err (struct can_frame * frame)
+void mcp2515_err(struct can_frame * frame)
 {
 	frame->can_id = CAN_ERR_FLAG;
 	frame->can_dlc = CAN_ERR_DLC;
@@ -197,7 +197,7 @@ void mcp2515_err (struct can_frame * frame)
 	}
 }
 
-uint8_t mcp2515_txbuf_empty (void)
+uint8_t mcp2515_txbuf_empty(void)
 {
 	if (can_cfg.mode & CAN_CTRLMODE_ONE_SHOT)
 		return 1;
@@ -205,17 +205,17 @@ uint8_t mcp2515_txbuf_empty (void)
 		return tx_empty;
 }
 
-uint8_t mcp2515_has_data (void)
+uint8_t mcp2515_has_data(void)
 {
 	return (status & CANINTF_RX);
 }
 
-uint8_t mcp2515_has_errors (void)
+uint8_t mcp2515_has_errors(void)
 {
 	return (status & CANINTF_ERR);
 }
 
-uint8_t mcp2515_start (void)
+uint8_t mcp2515_start(void)
 {
 	uint8_t cnf1, cnf2, cnf3;
 
@@ -250,7 +250,7 @@ uint8_t mcp2515_start (void)
 	return 0;
 }
 
-uint8_t mcp2515_stop (void)
+uint8_t mcp2515_stop(void)
 {
 	ctrl &= ~(CANCTRL_REQOP_MASK | CANCTRL_OSM);
 	ctrl |= CANCTRL_REQOP_CONF;
@@ -264,7 +264,7 @@ uint8_t mcp2515_stop (void)
 	return 0;
 }
 
-void mcp2515_init (uint8_t clkpre)
+void mcp2515_init(uint8_t clkpre)
 {
 	mcp2515_reset();
 

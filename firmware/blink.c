@@ -16,7 +16,7 @@
 static uint8_t led_timeout_a;
 static uint8_t led_timeout_b;
 
-void blink_init (void)
+void blink_init(void)
 {
 	TIMSK0 = ( (1 << OCIE0A) );
 
@@ -38,13 +38,13 @@ ISR(TIMER0_COMPA_vect)
 		led_b_off();
 }
 
-void blink_tx (void)
+void blink_tx(void)
 {
 	led_a_on();
 	led_timeout_a = 2;
 }
 
-void blink_rx (void)
+void blink_rx(void)
 {
 	led_b_on();
 	led_timeout_b = 2;

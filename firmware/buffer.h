@@ -12,6 +12,6 @@ struct usb_rx_buffer {
 	struct can_frame frames[RX_MAX_FRAMES];
 };
 
-void buffer_tx_process (void);
-void buffer_rx_process (void);
-void buffer_reset (void);
+void buffer_tx_process(void);
+void buffer_rx_process(void);
+void buffer_reset(void);
