@@ -14,7 +14,7 @@
 #define	USB_VENDOR	0x03eb
 #define	USB_PRODUCT	0xcab5
 
-#define	BOARD_MAX_mA	40
+#define	BOARD_MAX_mA	100
 
 enum {
 	STRING_UNDEF = 0,
