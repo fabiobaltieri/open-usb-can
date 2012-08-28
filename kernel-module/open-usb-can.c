@@ -188,7 +188,7 @@ static void open_usb_can_read_bulk_callback(struct urb *urb)
 	}
 
 	for (i = 0; i < msg->hdr.frame_count; i++) {
-		struct open_usb_can_frame * frm = &msg->frames[i];
+		struct open_usb_can_frame *frm = &msg->frames[i];
 
 		skb = alloc_can_skb(dev->netdev, &cf);
 		if (skb == NULL) {
@@ -209,7 +209,8 @@ static void open_usb_can_read_bulk_callback(struct urb *urb)
 
 	atomic_set(&dev->buffer_level, msg->hdr.free_slots);
 
-	if (msg->hdr.free_slots > MAX_TX_URBS + 3 && netif_queue_stopped(netdev))
+	if (msg->hdr.free_slots > MAX_TX_URBS + 3 &&
+	    netif_queue_stopped(netdev))
 		netif_wake_queue(netdev);
 
 resubmit_urb:
@@ -580,7 +581,7 @@ static const struct net_device_ops open_usb_can_netdev_ops = {
 	.ndo_start_xmit = open_usb_can_start_xmit,
 };
 
-static struct can_bittiming_const open_usb_can_bittiming_const = {
+static const struct can_bittiming_const open_usb_can_bittiming_const = {
 	.name = "open_usb_can",
 	.tseg1_min = 3,
 	.tseg1_max = 16,
