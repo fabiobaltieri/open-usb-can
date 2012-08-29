@@ -101,28 +101,40 @@ static const uint8_t string_descriptor_0[] = {
 static const uint8_t string_descriptor_product[] = {
 	26,				/* blength */
 	USB_DT_STRING,			/* bDescriptorType */
-	'O', '\0',
+	'o', '\0',
 	'p', '\0',
 	'e', '\0',
 	'n', '\0',
-	' ', '\0',
-	'U', '\0',
-	'S', '\0',
-	'B', '\0',
 	'-', '\0',
-	'C', '\0',
-	'A', '\0',
-	'N', '\0',
+	'u', '\0',
+	's', '\0',
+	'b', '\0',
+	'-', '\0',
+	'c', '\0',
+	'a', '\0',
+	'n', '\0',
 };
 
 static const uint8_t string_descriptor_vendor[] = {
-	12,				/* blength */
+	36,				/* blength */
 	USB_DT_STRING,			/* bDescriptorType */
-	'B', '\0',
+	'f', '\0',
+	'a', '\0',
+	'b', '\0',
+	'i', '\0',
+	'o', '\0',
+	'b', '\0',
 	'a', '\0',
 	'l', '\0',
 	't', '\0',
+	'i', '\0',
+	'e', '\0',
+	'r', '\0',
+	'i', '\0',
+	'.', '\0',
+	'c', '\0',
 	'o', '\0',
+	'm', '\0',
 };
 
 int strings_get_descr(uint8_t type, uint8_t index, const uint8_t **reply, uint8_t *size)
