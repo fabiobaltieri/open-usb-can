@@ -38,12 +38,6 @@ int main(void)
 	volatile int zero = 0;
 	uint32_t loop = 0;
 
-	condition_init();
-
-	if (condition_check() &&
-	    pgm_read_byte(zero) != 0xff)
-		run_payload();
-
 	board_init();
 	spi_init();
 
@@ -67,14 +61,24 @@ int main(void)
 
 	sei();
 
-	for (loop = 0;; loop++) {
+	while (loop < 5) {
 		led_a_on();
-		_delay_ms(50);
-		led_a_off();
-		_delay_ms(500);
 		led_b_on();
 		_delay_ms(50);
+		led_a_off();
 		led_b_off();
-		_delay_ms(500);
+		_delay_ms(400);
+
+		if (dfu.state == dfuIDLE && pgm_read_byte(zero) != 0xff)
+			loop++;
+		else
+			loop = 0;
 	}
+
+	cli();
+
+	usb_reset();
+	run_payload();
+
+	while (1);
 }

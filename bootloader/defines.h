@@ -1,16 +1,3 @@
-#include <stdint.h>
-
-/* buttons */
-#define BUTTON_PORT PORTD
-#define BUTTON_DDR  DDRD
-#define BUTTON_PIN  PIND
-#define BUTTON_HWB PC7
-
-#define button_read() (BUTTON_PIN & _BV(BUTTON_HWB))
-
-#define condition_init() { BUTTON_PORT |= _BV(BUTTON_HWB); _delay_us(10); }
-#define condition_check() (button_read())
-
 /* leds */
 #define LED_A_PORT PORTC
 #define LED_A_DDR  DDRC
