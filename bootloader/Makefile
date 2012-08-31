@@ -28,7 +28,7 @@ SIZE = $(CROSS_COMPILE)size
 AVRDUDE = avrdude
 AVRDUDEFLAGS = -cusbasp -p$(MCU)
 
-CFLAGS  = -Os -Iusb -Wall -mmcu=$(MCU) -DF_CPU=$(F_CPU) -DBOOT_ADDR=0x7000
+CFLAGS  = -Iusb -Wall -mmcu=$(MCU) -DF_CPU=$(F_CPU) -DBOOT_ADDR=0x7000
 ASFLAGS =
 LDFLAGS = -Wl,--section-start=.text=0x7000
 

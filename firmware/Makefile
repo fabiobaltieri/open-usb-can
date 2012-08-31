@@ -29,7 +29,7 @@ AVRDUDEFLAGS = -cusbasp -p$(MCU)
 DFU_UTIL = dfu-util
 DFU_UTIL_FLAGS = -R
 
-CFLAGS  = -Os -Iusb -Wall -mmcu=$(MCU) -DF_CPU=$(F_CPU)
+CFLAGS  = -Iusb -Wall -mmcu=$(MCU) -DF_CPU=$(F_CPU)
 ASFLAGS =
 LDFLAGS =
 
