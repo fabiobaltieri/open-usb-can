@@ -38,25 +38,25 @@ static const uint8_t string_descriptor_2[] = {
 };
 
 static const uint8_t string_descriptor_3[] = {
-        36,                             /* blength */
-        USB_DT_STRING,                  /* bDescriptorType */
-        'f', '\0',
-        'a', '\0',
-        'b', '\0',
-        'i', '\0',
-        'o', '\0',
-        'b', '\0',
-        'a', '\0',
-        'l', '\0',
-        't', '\0',
-        'i', '\0',
-        'e', '\0',
-        'r', '\0',
-        'i', '\0',
-        '.', '\0',
-        'c', '\0',
-        'o', '\0',
-        'm', '\0',
+	36,				/* blength */
+	USB_DT_STRING,			/* bDescriptorType */
+	'f', '\0',
+	'a', '\0',
+	'b', '\0',
+	'i', '\0',
+	'o', '\0',
+	'b', '\0',
+	'a', '\0',
+	'l', '\0',
+	't', '\0',
+	'i', '\0',
+	'e', '\0',
+	'r', '\0',
+	'i', '\0',
+	'.', '\0',
+	'c', '\0',
+	'o', '\0',
+	'm', '\0',
 };
 
 static const uint8_t string_descriptor_4[] = {
