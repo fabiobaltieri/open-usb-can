@@ -11,8 +11,10 @@
  *
  */
 
-#define	USB_VENDOR	0x03eb
-#define	USB_PRODUCT	0xcab5
+/* from Openmoko open registry for community:
+ * http://wiki.openmoko.org/wiki/USB_Product_IDs */
+#define	USB_VENDOR	0x1d50	/* Openmoko, Inc */
+#define	USB_PRODUCT	0x6045	/* open-usb-can (Normal mode) */
 
 #define	BOARD_MAX_mA	100
 

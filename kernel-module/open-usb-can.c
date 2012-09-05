@@ -37,9 +37,10 @@ MODULE_AUTHOR("Fabio Baltieri <fabio.baltieri@gmail.com>");
 MODULE_DESCRIPTION("CAN driver for Open USB-CAN interfaces");
 MODULE_LICENSE("GPL v2");
 
-/* Define these values to match your devices */
-#define OPEN_USB_CAN_VENDOR_ID	0x03eb
-#define OPEN_USB_CAN_PRODUCT_ID	0xcab5
+/* from Openmoko open registry for community:
+ * http://wiki.openmoko.org/wiki/USB_Product_IDs */
+#define OPEN_USB_CAN_VENDOR_ID	0x1d50
+#define OPEN_USB_CAN_PRODUCT_ID	0x6045
 
 #define OPEN_USB_CAN_CAN_CLOCK	16000000
 

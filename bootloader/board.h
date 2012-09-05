@@ -16,8 +16,10 @@
 
 #include <stdint.h>
 
-#define	USB_VENDOR	0x20b7	/* Qi Hardware */
-#define	USB_PRODUCT	0x1540	/* ben-wpan atusb */
+/* from Openmoko open registry for community:
+ * http://wiki.openmoko.org/wiki/USB_Product_IDs */
+#define	USB_VENDOR	0x1d50	/* Openmoko, Inc */
+#define	USB_PRODUCT	0x6044	/* open-usb-can (DFU) */
 
 #define	DFU_USB_VENDOR	USB_VENDOR
 #define	DFU_USB_PRODUCT	USB_PRODUCT
