@@ -141,4 +141,5 @@ fuse:
 	$(AVRDUDE) $(AVRDUDEFLAGS) -U lfuse:w:$(LFUSE):m -U hfuse:w:$(HFUSE):m
 
 boot: $(NAME)_text.bin
-	$(DFU_UTIL) $(DFU_UTIL_FLAGS) -D $(NAME)_text.bin
+	$(DFU_UTIL) -d 1d50:6045 -e || true
+	$(DFU_UTIL) -d 1d50:6044 $(DFU_UTIL_FLAGS) -D $(NAME)_text.bin
