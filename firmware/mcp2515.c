@@ -131,14 +131,11 @@ uint8_t mcp2515_tx(struct can_frame * frame)
 
 void mcp2515_rx(struct can_frame * frame)
 {
-	uint8_t ret;
 	uint8_t buf;
 	uint8_t i;
 
-	ret = mcp2515_read_reg(CANINTF);
-
 	can_cs_l();
-	spi_io(INSTRUCTION_READ_RXB((ret & CANINTF_RX0IF) ? 0 : 1));
+	spi_io(INSTRUCTION_READ_RXB((status & CANINTF_RX0IF) ? 0 : 1));
 
 	buf = spi_io(0xff); /* RXBnSIDH */
 	frame->can_id = buf << RXBSIDH_SHIFT;
