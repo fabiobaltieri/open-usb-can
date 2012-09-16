@@ -117,7 +117,7 @@ MKDEP =									\
 	  { rm -f $(basename $@).d; exit 1; }
 
 %.o: %.c
-	$(CC) $(CFLAGS) -Os -c $< -o $@
+	$(CC) $(CFLAGS) -O3 -c $< -o $@
 	$(MKDEP)
 
 %.o: %.S
