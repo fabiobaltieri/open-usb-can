@@ -135,7 +135,7 @@ void mcp2515_rx(struct can_frame * frame)
 	uint8_t i;
 
 	can_cs_l();
-	spi_io(INSTRUCTION_READ_RXB((status & CANINTF_RX0IF) ? 0 : 1));
+	spi_io(INSTRUCTION_READ_RXB(0));
 
 	buf = spi_io(0xff); /* RXBnSIDH */
 	frame->can_id = buf << RXBSIDH_SHIFT;
@@ -241,6 +241,13 @@ uint8_t mcp2515_start(void)
 	mcp2515_write_reg(CNF2, cnf2);
 	mcp2515_write_reg(CNF3, cnf3);
 	mcp2515_write_reg(CANCTRL, ctrl);
+
+	/* NOTE: only uses buffer 0 to prevent misordering,
+	 * add RXBCTRL_BUKT to enable second buffer */
+	mcp2515_write_reg(RXBCTRL(0),
+			RXBCTRL_RXM0 | RXBCTRL_RXM1);
+	mcp2515_write_reg(RXBCTRL(1),
+			RXBCTRL_RXM0 | RXBCTRL_RXM1);
 
 	tx_empty = 1;
 
