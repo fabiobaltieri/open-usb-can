@@ -31,9 +31,9 @@ static volatile uint8_t tx_buf_r;
 static volatile uint8_t tx_buf_count;
 
 static struct usb_rx_buffer rx_buf[2];
-static volatile uint8_t rx_slot;
+static uint8_t rx_slot;
 
-static volatile uint8_t update_needed;
+static uint8_t update_needed;
 
 static void buffer_tx_prepare(void);
 
