@@ -32,6 +32,7 @@
 #include <linux/can.h>
 #include <linux/can/dev.h>
 #include <linux/can/error.h>
+#include <linux/can/led.h>
 
 MODULE_AUTHOR("Fabio Baltieri <fabio.baltieri@gmail.com>");
 MODULE_DESCRIPTION("CAN driver for Open USB-CAN interfaces");
@@ -124,7 +125,6 @@ struct usb_tx_urb_context {
 
 struct open_usb_can {
 	struct can_priv can; /* must be the first member */
-	int open_time;
 
 	struct usb_device *udev;
 	struct net_device *netdev;
@@ -206,6 +206,8 @@ static void open_usb_can_read_bulk_callback(struct urb *urb)
 
 		stats->rx_packets++;
 		stats->rx_bytes += frm->can_dlc;
+
+		can_led_event(dev->netdev, CAN_LED_EVENT_RX);
 	}
 
 	atomic_set(&dev->buffer_level, msg->hdr.free_slots);
@@ -260,6 +262,8 @@ static void open_usb_can_write_bulk_callback(struct urb *urb)
 	/* transmission complete interrupt */
 	netdev->stats.tx_packets++;
 	netdev->stats.tx_bytes += context->dlc;
+
+	can_led_event(dev->netdev, CAN_LED_EVENT_TX);
 
 	can_get_echo_skb(netdev, context->echo_index);
 
@@ -423,7 +427,7 @@ static int open_usb_can_open(struct net_device *netdev)
 		return err;
 	}
 
-	dev->open_time = jiffies;
+	can_led_event(dev->netdev, CAN_LED_EVENT_OPEN);
 
 	netif_start_queue(netdev);
 
@@ -569,9 +573,9 @@ static int open_usb_can_close(struct net_device *netdev)
 			__func__, err);
 	}
 
-	close_candev(netdev);
+	can_led_event(dev->netdev, CAN_LED_EVENT_STOP);
 
-	dev->open_time = 0;
+	close_candev(netdev);
 
 	return 0;
 }
@@ -631,23 +635,9 @@ static int open_usb_can_set_bittiming(struct net_device *netdev)
 	return 0;
 }
 
-/* static int open_usb_can_get_berr_counter(const struct net_device *netdev, */
-/* 				     struct can_berr_counter *bec) */
-/* { */
-/* 	struct open_usb_can *dev = netdev_priv(netdev); */
-
-/* 	bec->txerr = dev->bec.txerr; */
-/* 	bec->rxerr = dev->bec.rxerr; */
-
-/* 	return 0; */
-/* } */
-
 static int open_usb_can_set_mode(struct net_device *netdev, enum can_mode mode)
 {
 	struct open_usb_can *dev = netdev_priv(netdev);
-
-	if (!dev->open_time)
-		return -EINVAL;
 
 	switch (mode) {
 	case CAN_MODE_START:
@@ -700,7 +690,7 @@ static int open_usb_can_probe(struct usb_interface *intf,
 	dev->can.bittiming_const = &open_usb_can_bittiming_const;
 	dev->can.do_set_bittiming = open_usb_can_set_bittiming;
 	dev->can.do_set_mode = open_usb_can_set_mode;
-	/* dev->can.do_get_berr_counter = open_usb_can_get_berr_counter; */
+	dev->can.do_get_berr_counter = NULL;
 	dev->can.ctrlmode_supported =
 		CAN_CTRLMODE_ONE_SHOT | CAN_CTRLMODE_3_SAMPLES |
 		CAN_CTRLMODE_LISTENONLY | CAN_CTRLMODE_LOOPBACK;
@@ -745,6 +735,8 @@ static int open_usb_can_probe(struct usb_interface *intf,
 		err = -ENOMEM;
 		goto done;
 	}
+
+	devm_can_led_init(netdev);
 
 	netdev_info(netdev,
 		 "Open USB-CAN device probed, hw version: %d.%d\n",
