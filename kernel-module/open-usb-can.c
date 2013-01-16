@@ -162,6 +162,7 @@ static void open_usb_can_read_bulk_callback(struct urb *urb)
 	case -ENOENT:
 	case -ESHUTDOWN:
 	case -EILSEQ:
+	case -EPROTO:
 		return;
 
 	default:
@@ -494,7 +495,7 @@ static netdev_tx_t open_usb_can_start_xmit(struct sk_buff *skb,
 	context->echo_index = i;
 	context->dlc = cf->can_dlc;
 
-	netdev_dbg(netdev, "TX frame: size=%d buffer_level=%d\n",
+	netdev_dbg(netdev, "TX frame: size=%ld buffer_level=%d\n",
 		   size, atomic_read(&dev->buffer_level));
 
 	usb_fill_bulk_urb(urb, dev->udev, usb_sndbulkpipe(dev->udev, 1), buf,
@@ -637,8 +638,6 @@ static int open_usb_can_set_bittiming(struct net_device *netdev)
 
 static int open_usb_can_set_mode(struct net_device *netdev, enum can_mode mode)
 {
-	struct open_usb_can *dev = netdev_priv(netdev);
-
 	switch (mode) {
 	case CAN_MODE_START:
 		netif_wake_queue(netdev);
