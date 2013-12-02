@@ -32,7 +32,6 @@
 #include <linux/can.h>
 #include <linux/can/dev.h>
 #include <linux/can/error.h>
-#include <linux/can/led.h>
 
 MODULE_AUTHOR("Fabio Baltieri <fabio.baltieri@gmail.com>");
 MODULE_DESCRIPTION("CAN driver for Open USB-CAN interfaces");
@@ -207,8 +206,6 @@ static void open_usb_can_read_bulk_callback(struct urb *urb)
 
 		stats->rx_packets++;
 		stats->rx_bytes += frm->can_dlc;
-
-		can_led_event(dev->netdev, CAN_LED_EVENT_RX);
 	}
 
 	atomic_set(&dev->buffer_level, msg->hdr.free_slots);
@@ -263,8 +260,6 @@ static void open_usb_can_write_bulk_callback(struct urb *urb)
 	/* transmission complete interrupt */
 	netdev->stats.tx_packets++;
 	netdev->stats.tx_bytes += context->dlc;
-
-	can_led_event(dev->netdev, CAN_LED_EVENT_TX);
 
 	can_get_echo_skb(netdev, context->echo_index);
 
@@ -428,8 +423,6 @@ static int open_usb_can_open(struct net_device *netdev)
 		return err;
 	}
 
-	can_led_event(dev->netdev, CAN_LED_EVENT_OPEN);
-
 	netif_start_queue(netdev);
 
 	return 0;
@@ -573,8 +566,6 @@ static int open_usb_can_close(struct net_device *netdev)
 			"%s: error sending stop control command = %d\n",
 			__func__, err);
 	}
-
-	can_led_event(dev->netdev, CAN_LED_EVENT_STOP);
 
 	close_candev(netdev);
 
@@ -734,8 +725,6 @@ static int open_usb_can_probe(struct usb_interface *intf,
 		err = -ENOMEM;
 		goto done;
 	}
-
-	devm_can_led_init(netdev);
 
 	netdev_info(netdev,
 		 "Open USB-CAN device probed, hw version: %d.%d\n",
