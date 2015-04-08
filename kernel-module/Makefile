@@ -1,4 +1,4 @@
-KERNELDIR ?= $(HOME)/linux
+KERNELDIR ?= /lib/modules/`uname -r`/build
 PWD := $(shell pwd)
 
 obj-m := open-usb-can.o
