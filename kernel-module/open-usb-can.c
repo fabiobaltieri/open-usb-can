@@ -258,7 +258,7 @@ static void open_usb_can_write_bulk_callback(struct urb *urb)
 		dev_info(dev->udev->dev.parent,
 			 "Tx URB aborted (%d)\n", urb->status);
 
-	netdev->trans_start = jiffies;
+	netif_trans_update(netdev);
 
 	/* transmission complete interrupt */
 	netdev->stats.tx_packets++;
@@ -532,7 +532,7 @@ static netdev_tx_t open_usb_can_start_xmit(struct sk_buff *skb,
 		goto releasebuf;
 	}
 
-	netdev->trans_start = jiffies;
+	netif_trans_update(netdev);
 
 	/*
 	 * Release our reference to this URB, the USB core will eventually free
