@@ -13285,31 +13285,35 @@ Diode with low voltage drop</description>
 <net name="MISO" class="0">
 <segment>
 <wire x1="129.54" y1="17.78" x2="111.76" y2="17.78" width="0.1524" layer="91"/>
-<wire x1="101.6" y1="63.5" x2="91.44" y2="63.5" width="0.1524" layer="91"/>
 <label x="111.76" y="17.78" size="1.778" layer="95"/>
-<label x="101.6" y="63.5" size="1.778" layer="95" rot="MR0"/>
 <pinref part="ISP1" gate="A" pin="1"/>
-<pinref part="U2" gate="G$1" pin="PB3(MISO)"/>
 </segment>
 <segment>
 <wire x1="124.46" y1="154.94" x2="114.3" y2="154.94" width="0.1524" layer="91"/>
 <label x="114.3" y="154.94" size="1.778" layer="95"/>
 <pinref part="U1" gate="G$1" pin="SO"/>
 </segment>
+<segment>
+<pinref part="U2" gate="G$1" pin="PB3(MISO)"/>
+<wire x1="101.6" y1="63.5" x2="91.44" y2="63.5" width="0.1524" layer="91"/>
+<label x="101.6" y="63.5" size="1.778" layer="95" rot="MR0"/>
+</segment>
 </net>
 <net name="SCK" class="0">
 <segment>
 <wire x1="129.54" y1="15.24" x2="111.76" y2="15.24" width="0.1524" layer="91"/>
-<wire x1="101.6" y1="68.58" x2="91.44" y2="68.58" width="0.1524" layer="91"/>
 <label x="111.76" y="15.24" size="1.778" layer="95"/>
-<label x="101.6" y="68.58" size="1.778" layer="95" rot="MR0"/>
 <pinref part="ISP1" gate="A" pin="3"/>
-<pinref part="U2" gate="G$1" pin="PB1(SCK)"/>
 </segment>
 <segment>
 <wire x1="124.46" y1="160.02" x2="114.3" y2="160.02" width="0.1524" layer="91"/>
 <label x="114.3" y="160.02" size="1.778" layer="95"/>
 <pinref part="U1" gate="G$1" pin="SCK"/>
+</segment>
+<segment>
+<pinref part="U2" gate="G$1" pin="PB1(SCK)"/>
+<wire x1="101.6" y1="68.58" x2="91.44" y2="68.58" width="0.1524" layer="91"/>
+<label x="101.6" y="68.58" size="1.778" layer="95" rot="MR0"/>
 </segment>
 </net>
 <net name="RESET" class="0">
@@ -13333,26 +13337,30 @@ Diode with low voltage drop</description>
 <net name="MOSI" class="0">
 <segment>
 <wire x1="137.16" y1="15.24" x2="154.94" y2="15.24" width="0.1524" layer="91"/>
-<wire x1="91.44" y1="66.04" x2="101.6" y2="66.04" width="0.1524" layer="91"/>
 <label x="154.94" y="15.24" size="1.778" layer="95" rot="MR0"/>
-<label x="101.6" y="66.04" size="1.778" layer="95" rot="MR0"/>
 <pinref part="ISP1" gate="A" pin="4"/>
-<pinref part="U2" gate="G$1" pin="PB2(MOSI)"/>
 </segment>
 <segment>
 <wire x1="124.46" y1="157.48" x2="114.3" y2="157.48" width="0.1524" layer="91"/>
 <label x="114.3" y="157.48" size="1.778" layer="95"/>
 <pinref part="U1" gate="G$1" pin="SI"/>
 </segment>
+<segment>
+<pinref part="U2" gate="G$1" pin="PB2(MOSI)"/>
+<wire x1="91.44" y1="66.04" x2="101.6" y2="66.04" width="0.1524" layer="91"/>
+<label x="101.6" y="66.04" size="1.778" layer="95" rot="MR0"/>
+</segment>
 </net>
 <net name="SS" class="0">
 <segment>
 <wire x1="124.46" y1="152.4" x2="114.3" y2="152.4" width="0.1524" layer="91"/>
-<wire x1="101.6" y1="71.12" x2="91.44" y2="71.12" width="0.1524" layer="91"/>
 <label x="114.3" y="152.4" size="1.778" layer="95"/>
-<label x="101.6" y="71.12" size="1.778" layer="95" rot="MR0"/>
 <pinref part="U1" gate="G$1" pin="!CS"/>
+</segment>
+<segment>
 <pinref part="U2" gate="G$1" pin="PB0"/>
+<wire x1="101.6" y1="71.12" x2="91.44" y2="71.12" width="0.1524" layer="91"/>
+<label x="101.6" y="71.12" size="1.778" layer="95" rot="MR0"/>
 </segment>
 </net>
 <net name="INT" class="0">
