@@ -625,7 +625,7 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <attribute name="SPICEPREFIX" value="R" x="-20.31" y="-8.51" size="1.778" layer="27" rot="R270" display="off"/>
 <attribute name="VALUE" x="19.06" y="8.635" size="1.27" layer="27" rot="R270"/>
 </element>
-<element name="R5" library="balto" package="0603" value="10k" x="17.2" y="9.2" smashed="yes" rot="R90">
+<element name="R5" library="balto" package="0603" value="22k" x="17.2" y="9.2" smashed="yes" rot="R90">
 <attribute name="NAME" x="16.438" y="7.676" size="1.27" layer="25" rot="R90"/>
 <attribute name="VALUE" x="19.232" y="7.676" size="1.27" layer="27" rot="R90"/>
 </element>

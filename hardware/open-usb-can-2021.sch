@@ -12507,7 +12507,7 @@ Diode with low voltage drop</description>
 <part name="R35" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-EU_" device="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="120"/>
 <part name="GND39" library="supply1" deviceset="GND" device=""/>
 <part name="+3V9" library="supply1" deviceset="+3V3" device=""/>
-<part name="R36" library="balto" deviceset="R" device="0603" value="100k"/>
+<part name="R36" library="balto" deviceset="R" device="0603" value="0"/>
 <part name="R2" library="balto" deviceset="R" device="0603" value="22"/>
 <part name="R3" library="balto" deviceset="R" device="0603" value="22"/>
 <part name="ISP1" library="balto" deviceset="ISP-AVR910" device="TP"/>
@@ -12525,13 +12525,13 @@ Diode with low voltage drop</description>
 <part name="+3V1" library="supply1" deviceset="+3V3" device=""/>
 <part name="GND6" library="supply1" deviceset="GND" device=""/>
 <part name="+3V3" library="supply1" deviceset="+3V3" device=""/>
-<part name="R29" library="balto" deviceset="R" device="0402" value="5k6"/>
+<part name="R29" library="balto" deviceset="R" device="0402" value="1k"/>
 <part name="LED2" library="led" library_urn="urn:adsk.eagle:library:259" deviceset="LED" device="CHIPLED_0603" package3d_urn="urn:adsk.eagle:package:15822/2"/>
 <part name="LED3" library="led" library_urn="urn:adsk.eagle:library:259" deviceset="LED" device="CHIPLED_0603" package3d_urn="urn:adsk.eagle:package:15822/2"/>
-<part name="R30" library="balto" deviceset="R" device="0402" value="5k6"/>
+<part name="R30" library="balto" deviceset="R" device="0402" value="1k"/>
 <part name="+3V4" library="supply1" deviceset="+3V3" device=""/>
 <part name="GND7" library="supply1" deviceset="GND" device=""/>
-<part name="R4" library="balto" deviceset="R" device="0402" value="5k6"/>
+<part name="R4" library="balto" deviceset="R" device="0402" value="1k"/>
 <part name="LED1" library="led" library_urn="urn:adsk.eagle:library:259" deviceset="LED" device="CHIPLED_0603" package3d_urn="urn:adsk.eagle:package:15822/2"/>
 <part name="C4" library="balto" deviceset="C" device="0402" value="100n"/>
 <part name="C5" library="balto" deviceset="C" device="0402" value="100n"/>
@@ -12566,7 +12566,7 @@ Diode with low voltage drop</description>
 <part name="+3V5" library="supply1" deviceset="+3V3" device=""/>
 <part name="+3V2" library="supply1" deviceset="+3V3" device=""/>
 <part name="J1" library="MF_Connectors" deviceset="CON_01X02" device="_PTH_2.54MM" value="MF-CON-2.54mm-01x02"/>
-<part name="R5" library="balto" deviceset="R" device="0603" value="10k"/>
+<part name="R5" library="balto" deviceset="R" device="0603" value="22k"/>
 <part name="LED4" library="led" library_urn="urn:adsk.eagle:library:259" deviceset="LED" device="CHIPLED_0603" package3d_urn="urn:adsk.eagle:package:15822/2"/>
 <part name="GND1" library="supply1" deviceset="GND" device=""/>
 <part name="P+1" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="V+" device=""/>
@@ -12631,6 +12631,10 @@ Diode with low voltage drop</description>
 <text x="198.12" y="170.18" size="5.08" layer="97">Connectors</text>
 <text x="5.08" y="116.84" size="5.08" layer="97">CAN XCVR</text>
 <text x="236.22" y="63.5" size="5.08" layer="97">HWB</text>
+<text x="63.5" y="88.9" size="1.778" layer="97">TODO:
+- connect INT
+- fix xcvr AGND
+- add xcvr cap</text>
 </plain>
 <instances>
 <instance part="U5" gate="G$1" x="27.94" y="101.6" smashed="yes">
@@ -13530,18 +13534,14 @@ Diode with low voltage drop</description>
 <errors>
 <approved hash="104,1,157.48,134.62,U1,VDD,+3V3,,,"/>
 <approved hash="104,1,157.48,132.08,U1,VSS,GND,,,"/>
-<approved hash="115,1,61.1971,116.971,JP3,,,,,"/>
-<approved hash="115,1,132.912,16.6412,ISP1,,,,,"/>
-<approved hash="115,1,86.6817,100.33,LED2,,,,,"/>
-<approved hash="115,1,96.8417,100.33,LED3,,,,,"/>
-<approved hash="115,1,76.5217,100.33,LED1,,,,,"/>
-<approved hash="115,1,254.237,61.0912,JP2,,,,,"/>
-<approved hash="115,1,244.517,99.4495,JP5,,,,,"/>
-<approved hash="115,1,131.976,90.066,FRAME1,,,,,"/>
 </errors>
 </schematic>
 </drawing>
 <compatibility>
+<note version="6.3" minversion="6.2.2" severity="warning">
+Since Version 6.2.2 text objects can contain more than one line,
+which will not be processed correctly with this version.
+</note>
 <note version="8.2" severity="warning">
 Since Version 8.2, EAGLE supports online libraries. The ids
 of those online libraries will not be understood (or retained)

@@ -1052,7 +1052,7 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <attribute name="NAME" x="5.565" y="10.435" size="1.27" layer="25"/>
 <attribute name="VALUE" x="5.565" y="7.895" size="1.27" layer="27"/>
 </element>
-<element name="R29" library="balto" package="0402" value="5k6" x="4.8" y="16.2" smashed="yes">
+<element name="R29" library="balto" package="0402" value="1k" x="4.8" y="16.2" smashed="yes">
 <attribute name="NAME" x="3.276" y="16.962" size="1.27" layer="25"/>
 <attribute name="VALUE" x="3.276" y="14.168" size="1.27" layer="27"/>
 </element>
@@ -1060,7 +1060,7 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <attribute name="NAME" x="5.565" y="9.235" size="1.27" layer="25"/>
 <attribute name="VALUE" x="5.565" y="6.695" size="1.27" layer="27"/>
 </element>
-<element name="R30" library="balto" package="0402" value="5k6" x="5" y="2.6" smashed="yes">
+<element name="R30" library="balto" package="0402" value="1k" x="5" y="2.6" smashed="yes">
 <attribute name="NAME" x="3.476" y="3.362" size="1.27" layer="25"/>
 <attribute name="VALUE" x="3.476" y="0.568" size="1.27" layer="27"/>
 </element>
@@ -1070,15 +1070,15 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <attribute name="SPICEPREFIX" value="R" x="3.24" y="-17.92" size="1.778" layer="27" rot="R270" display="off"/>
 <attribute name="VALUE" x="36.26" y="3.035" size="1.27" layer="27" rot="R270"/>
 </element>
-<element name="R36" library="balto" package="0603" value="100k" x="39" y="9.8" smashed="yes">
+<element name="R36" library="balto" package="0603" value="0" x="39" y="9.8" smashed="yes">
 <attribute name="NAME" x="37.476" y="10.562" size="1.27" layer="25"/>
 <attribute name="VALUE" x="37.476" y="7.768" size="1.27" layer="27"/>
 </element>
-<element name="R4" library="balto" package="0402" value="5k6" x="4.8" y="15" smashed="yes">
+<element name="R4" library="balto" package="0402" value="1k" x="4.8" y="15" smashed="yes">
 <attribute name="NAME" x="3.276" y="15.762" size="1.27" layer="25"/>
 <attribute name="VALUE" x="3.276" y="12.968" size="1.27" layer="27"/>
 </element>
-<element name="R5" library="balto" package="0603" value="10k" x="39" y="12.4" smashed="yes">
+<element name="R5" library="balto" package="0603" value="22k" x="39" y="12.4" smashed="yes">
 <attribute name="NAME" x="37.476" y="13.162" size="1.27" layer="25"/>
 <attribute name="VALUE" x="37.476" y="10.368" size="1.27" layer="27"/>
 </element>

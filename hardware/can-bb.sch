@@ -6258,7 +6258,7 @@ Diode with low voltage drop</description>
 <parts>
 <part name="FRAME1" library="frames" library_urn="urn:adsk.eagle:library:229" deviceset="A5L-LOC" device=""/>
 <part name="J3" library="balto" deviceset="RJ45-8" device="PTH"/>
-<part name="R5" library="balto" deviceset="R" device="0603" value="10k"/>
+<part name="R5" library="balto" deviceset="R" device="0603" value="22k"/>
 <part name="LED4" library="led" library_urn="urn:adsk.eagle:library:259" deviceset="LED" device="CHIPLED_0603" package3d_urn="urn:adsk.eagle:package:15822/2"/>
 <part name="GND1" library="supply1" deviceset="GND" device=""/>
 <part name="P+1" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="V+" device=""/>
