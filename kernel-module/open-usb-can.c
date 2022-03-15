@@ -266,7 +266,7 @@ static void open_usb_can_write_bulk_callback(struct urb *urb)
 
 	can_led_event(dev->netdev, CAN_LED_EVENT_TX);
 
-	can_get_echo_skb(netdev, context->echo_index);
+	can_get_echo_skb(netdev, context->echo_index, NULL);
 
 	/* Release context */
 	context->echo_index = MAX_TX_URBS;
@@ -503,7 +503,7 @@ static netdev_tx_t open_usb_can_start_xmit(struct sk_buff *skb,
 	urb->transfer_flags |= URB_NO_TRANSFER_DMA_MAP;
 	usb_anchor_urb(urb, &dev->tx_submitted);
 
-	can_put_echo_skb(skb, netdev, context->echo_index);
+	can_put_echo_skb(skb, netdev, context->echo_index, 0);
 
 	atomic_inc(&dev->active_tx_jobs);
 
@@ -516,7 +516,7 @@ static netdev_tx_t open_usb_can_start_xmit(struct sk_buff *skb,
 
 	err = usb_submit_urb(urb, GFP_ATOMIC);
 	if (unlikely(err)) {
-		can_free_echo_skb(netdev, context->echo_index);
+		can_free_echo_skb(netdev, context->echo_index, NULL);
 
 		atomic_dec(&dev->active_tx_jobs);
 		usb_unanchor_urb(urb);
