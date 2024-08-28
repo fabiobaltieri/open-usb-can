@@ -11,6 +11,7 @@ socketcan compliant Linux kernel driver.
 > **Warning**
 >
 > This is not maintained or updated, please check out
+> https://github.com/CANnectivity/ or
 > https://github.com/candle-usb/candleLight_fw instead.
 
 License
